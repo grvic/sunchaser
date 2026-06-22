@@ -2,14 +2,22 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { GroupSidebar } from '@/components/GroupSidebar';
 import { GroupWorkspace, type CrewUser } from '@/components/GroupWorkspace';
+import { NameEditor } from '@/components/NameEditor';
 import { useAuth } from '@/hooks/AuthContext';
-import { getMyGroups, type Group } from '@/services/api';
+import {
+  getMyDisplayName,
+  getMyGroups,
+  setMyDisplayName,
+  type Group,
+} from '@/services/api';
 
 export function HomePage() {
   const { user, signOut, switchableUsers, switchUser } = useAuth();
+  const baseName = user?.name ?? user?.email?.split('@')[0] ?? 'Viajero';
+  const [displayName, setDisplayName] = useState<string | null>(null);
   const me: CrewUser = {
     id: user?.id ?? '',
-    name: user?.name ?? user?.email?.split('@')[0] ?? 'Viajero',
+    name: displayName ?? baseName,
   };
 
   const [groups, setGroups] = useState<Group[]>([]);
@@ -33,6 +41,28 @@ export function HomePage() {
   useEffect(() => {
     void loadGroups();
   }, [loadGroups]);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    setDisplayName(null);
+    let cancelled = false;
+    void getMyDisplayName(user.id, baseName).then((name) => {
+      if (!cancelled) setDisplayName(name);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id, baseName]);
+
+  const handleRename = useCallback(
+    async (name: string) => {
+      if (!user?.id) return;
+      await setMyDisplayName(user.id, name);
+      setDisplayName(name);
+      await loadGroups();
+    },
+    [user?.id, loadGroups]
+  );
 
   const active = groups.find((g) => g.id === activeId) ?? null;
 
@@ -61,12 +91,7 @@ export function HomePage() {
               </select>
             </label>
           )}
-          <span
-            className="hidden text-sm text-gray-600 sm:inline"
-            title={user?.email}
-          >
-            {me.name}
-          </span>
+          <NameEditor name={me.name} email={user?.email} onSave={handleRename} />
           <button
             onClick={() => void signOut()}
             className="text-sm text-gray-400 transition hover:text-gray-700"
@@ -89,7 +114,11 @@ export function HomePage() {
           {loading ? (
             <p className="py-24 text-center text-sm text-gray-400">Cargando…</p>
           ) : active ? (
-            <GroupWorkspace key={`${active.id}-${me.id}`} group={active} me={me} />
+            <GroupWorkspace
+              key={`${active.id}-${me.id}-${me.name}`}
+              group={active}
+              me={me}
+            />
           ) : (
             <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
               <p className="text-6xl">🏝️</p>

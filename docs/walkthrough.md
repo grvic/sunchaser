@@ -35,7 +35,7 @@ data path) and reshaped it into Sunchaser.
 
 ## 2. Model the data
 
-Five entities live in [`rayfin/data/`](../rayfin/data). Each gets explicit
+Six entities live in [`rayfin/data/`](../rayfin/data). Each gets explicit
 `@authenticated` permissions. Reads are shared within a crew; writes are pinned
 to the owning user with a row-level `policy`.
 
@@ -119,6 +119,16 @@ groups, votes and availability (row-level security in action). Switching to
 ![Signed in as Lucía](screenshots/07-as-lucia.png)
 
 > 🔁 Regenerate these with `node scripts/shoot-switcher.mjs` (demo server running).
+
+### Set your own name
+
+Click your name in the header to edit it. It's stored in a `Profile` entity
+(one row per user, RLS on `user_id` so you can only edit your own) and propagated
+to the snapshots you own — your membership, proposals and availability all update.
+
+![Edit your name](screenshots/09-edit-name.png)
+
+![Name propagated to the crew](screenshots/10-name-propagated.png)
 
 ## 4. Validate locally
 

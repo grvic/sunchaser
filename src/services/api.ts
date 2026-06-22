@@ -301,3 +301,78 @@ export async function deleteAvailability(id: string): Promise<void> {
   const client = getRayfinClient();
   await client.data.Availability.delete({ id });
 }
+
+// ---------------------------------------------------------------------------
+// Profile (display name)
+// ---------------------------------------------------------------------------
+
+/** Resolve the user's chosen display name, falling back to their auth name. */
+export async function getMyDisplayName(
+  userId: string,
+  fallback: string
+): Promise<string> {
+  const client = getRayfinClient();
+  const rows = await client.data.Profile.select(['displayName'])
+    .where({ user_id: { eq: userId } })
+    .execute();
+  const name = rows[0]?.displayName;
+  return name && name.trim() ? name : fallback;
+}
+
+/**
+ * Set the user's display name. Upserts their Profile (the source of truth) and
+ * propagates the new name to the denormalized snapshots they own across the app
+ * so members lists, proposals and availability update everywhere.
+ */
+export async function setMyDisplayName(
+  userId: string,
+  displayName: string
+): Promise<void> {
+  const client = getRayfinClient();
+  const name = displayName.trim();
+
+  const existing = await client.data.Profile.select(['id'])
+    .where({ user_id: { eq: userId } })
+    .execute();
+  if (existing.length > 0) {
+    await client.data.Profile.update(
+      { id: existing[0].id },
+      { displayName: name, updatedAt: new Date() }
+    );
+  } else {
+    await client.data.Profile.create({
+      user_id: userId,
+      displayName: name,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+  }
+
+  const members = await client.data.GroupMember.select(['id'])
+    .where({ user_id: { eq: userId } })
+    .execute();
+  const avails = await client.data.Availability.select(['id'])
+    .where({ user_id: { eq: userId } })
+    .execute();
+  const dests = await client.data.Destination.select(['id'])
+    .where({ proposedBy: { eq: userId } })
+    .execute();
+  const owned = await client.data.TripGroup.select(['id'])
+    .where({ owner_id: { eq: userId } })
+    .execute();
+
+  await Promise.all([
+    ...members.map((m) =>
+      client.data.GroupMember.update({ id: m.id }, { displayName: name })
+    ),
+    ...avails.map((a) =>
+      client.data.Availability.update({ id: a.id }, { displayName: name })
+    ),
+    ...dests.map((d) =>
+      client.data.Destination.update({ id: d.id }, { proposedByName: name })
+    ),
+    ...owned.map((g) =>
+      client.data.TripGroup.update({ id: g.id }, { ownerName: name })
+    ),
+  ]);
+}

@@ -31,6 +31,8 @@ export function setActiveDemoUser(id: string) {
 
 type Row = Record<string, unknown>;
 type Where = Record<string, { eq: unknown }>;
+/** Primary-key lookup used by delete/update — direct values, e.g. `{ id }`. */
+type UniqueWhere = Record<string, unknown>;
 
 class Table {
   rows: Row[] = [];
@@ -39,6 +41,12 @@ class Table {
     if (!where) return this.rows;
     return this.rows.filter((r) =>
       Object.entries(where).every(([k, cond]) => r[k] === cond.eq)
+    );
+  }
+
+  private findUnique(where: UniqueWhere) {
+    return this.rows.find((r) =>
+      Object.entries(where).every(([k, v]) => r[k] === v)
     );
   }
 
@@ -82,9 +90,15 @@ class Table {
     return { ...row };
   }
 
-  async delete(where: Where) {
+  async update(where: UniqueWhere, data: Row) {
+    const row = this.findUnique(where);
+    if (row) Object.assign(row, data);
+    return row ? { ...row } : null;
+  }
+
+  async delete(where: UniqueWhere) {
     this.rows = this.rows.filter(
-      (r) => !Object.entries(where).every(([k, cond]) => r[k] === cond.eq)
+      (r) => !Object.entries(where).every(([k, v]) => r[k] === v)
     );
   }
 }
@@ -104,6 +118,7 @@ function buildDemoData() {
     Destination: new Table(),
     Vote: new Table(),
     Availability: new Table(),
+    Profile: new Table(),
   };
 
   const groupId = 'grp-verano';

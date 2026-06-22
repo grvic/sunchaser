@@ -65,7 +65,7 @@ policies scope data by their `claims.sub`.
 
 ## Data model
 
-Five entities in [`rayfin/data/`](rayfin/data), each with explicit `@authenticated`
+Six entities in [`rayfin/data/`](rayfin/data), each with explicit `@authenticated`
 permissions and row-level policies. Reads are shared within a crew; writes are
 scoped to the owning user.
 
@@ -73,6 +73,7 @@ scoped to the owning user.
 TripGroup ──< GroupMember        a user belongs to many groups
 TripGroup ──< Destination ──< Vote
 TripGroup ──< Availability       date ranges per user → golden window
+Profile                          one display name per user (claims.sub)
 ```
 
 | Entity | Purpose | Row-level rule |
@@ -82,6 +83,7 @@ TripGroup ──< Availability       date ranges per user → golden window
 | `Destination` | A proposed place in a group | Only the **proposer** can edit/delete |
 | `Vote` | One vote per user per destination | You can only change **your own** vote |
 | `Availability` | A free date range per user | You edit **your own** ranges |
+| `Profile` | Your chosen display name | You edit **your own** profile |
 
 Example — the whole authorization story for votes is just decorators:
 
