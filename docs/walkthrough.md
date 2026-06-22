@@ -141,8 +141,13 @@ npx rayfin up status     # verify health
 On success the CLI prints the hosted app URL and the Fabric portal link, and
 records deployment metadata in `rayfin/.deployments.json` (git-ignored).
 
+The deployed app authenticates with Entra ID — here is the live Fabric
+deployment's sign-in screen:
+
+![Live app on Fabric](screenshots/08-live-fabric.png)
+
 See [`fabric-deploy.md`](fabric-deploy.md) for the live deployment log and the
-Fabric portal screenshots from this project.
+Fabric deployment details from this project.
 
 ## 6. Iterate
 

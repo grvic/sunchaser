@@ -15,6 +15,10 @@ This is the real deployment of Sunchaser to Microsoft Fabric, produced by
 | **Services** | `auth: enabled`, `data: enabled` |
 | **Endpoint health** | ✅ Reachable |
 
+The live deployment's Entra sign-in screen:
+
+![Live app on Fabric](screenshots/08-live-fabric.png)
+
 > Item IDs, the workload endpoint and the publishable key are written to
 > `rayfin/.deployments.json` (git-ignored). Run `npx rayfin up status` to print
 > the current values.
