@@ -1,0 +1,274 @@
+import { useState } from 'react';
+
+import { formatBudget, formatDateRange, rankDestinations } from '@/lib/overlap';
+import { DESTINATION_PRESETS } from '@/lib/presets';
+import {
+  createDestination,
+  deleteDestination,
+  toggleVote,
+  type DestinationItem,
+  type Group,
+  type VoteItem,
+} from '@/services/api';
+import type { CrewUser } from '@/components/GroupWorkspace';
+
+function defaultSummerRange(): { start: string; end: string } {
+  const year = new Date().getFullYear();
+  return { start: `${year}-07-15`, end: `${year}-07-22` };
+}
+
+export function DestinationsTab({
+  group,
+  me,
+  destinations,
+  votes,
+  onChanged,
+}: {
+  group: Group;
+  me: CrewUser;
+  destinations: DestinationItem[];
+  votes: VoteItem[];
+  onChanged: () => Promise<void>;
+}) {
+  const ranked = rankDestinations(destinations, votes, me.id);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
+
+  const range = defaultSummerRange();
+  const [form, setForm] = useState({
+    name: '',
+    country: '',
+    emoji: '✈️',
+    imageUrl: '',
+    estimatedBudget: 800,
+    start: range.start,
+    end: range.end,
+  });
+
+  const handleVote = async (destinationId: string) => {
+    setBusyId(destinationId);
+    try {
+      await toggleVote(group.id, destinationId, me.id);
+      await onChanged();
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    setBusyId(id);
+    try {
+      await deleteDestination(id);
+      await onChanged();
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name.trim()) return;
+    await createDestination(
+      {
+        group_id: group.id,
+        name: form.name.trim(),
+        country: form.country.trim(),
+        emoji: form.emoji || '✈️',
+        imageUrl: form.imageUrl,
+        estimatedBudget: Number(form.estimatedBudget) || 0,
+        suggestedStart: new Date(form.start),
+        suggestedEnd: new Date(form.end),
+      },
+      me
+    );
+    setForm({ ...form, name: '', country: '', imageUrl: '' });
+    setShowForm(false);
+    await onChanged();
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+          Propuestas ({destinations.length})
+        </h3>
+        <button
+          onClick={() => setShowForm((s) => !s)}
+          className="rounded-xl bg-gradient-to-r from-sun-500 to-sun-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:brightness-110"
+        >
+          {showForm ? 'Cerrar' : '+ Proponer destino'}
+        </button>
+      </div>
+
+      {showForm && (
+        <form
+          onSubmit={(e) => void submit(e)}
+          className="space-y-4 rounded-2xl border border-sun-200 bg-white/80 p-5 shadow-sm"
+        >
+          <div>
+            <p className="mb-2 text-xs font-medium text-gray-500">
+              Elige uno rápido 👇
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {DESTINATION_PRESETS.map((p) => (
+                <button
+                  key={p.name}
+                  type="button"
+                  onClick={() =>
+                    setForm((f) => ({
+                      ...f,
+                      name: p.name,
+                      country: p.country,
+                      emoji: p.emoji,
+                      imageUrl: p.imageUrl,
+                      estimatedBudget: p.estimatedBudget,
+                    }))
+                  }
+                  className="rounded-full border border-gray-200 bg-white px-3 py-1 text-sm transition hover:border-sun-400 hover:bg-sun-50"
+                >
+                  {p.emoji} {p.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <input
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              placeholder="Destino"
+              className="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm focus:border-sun-500 focus:outline-none"
+            />
+            <input
+              value={form.country}
+              onChange={(e) => setForm({ ...form, country: e.target.value })}
+              placeholder="País"
+              className="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm focus:border-sun-500 focus:outline-none"
+            />
+            <input
+              value={form.emoji}
+              onChange={(e) => setForm({ ...form, emoji: e.target.value })}
+              placeholder="Emoji"
+              maxLength={4}
+              className="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm focus:border-sun-500 focus:outline-none"
+            />
+            <input
+              type="number"
+              min={0}
+              value={form.estimatedBudget}
+              onChange={(e) =>
+                setForm({ ...form, estimatedBudget: Number(e.target.value) })
+              }
+              placeholder="Presupuesto (€)"
+              className="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm focus:border-sun-500 focus:outline-none"
+            />
+            <label className="text-xs text-gray-500">
+              Desde
+              <input
+                type="date"
+                value={form.start}
+                onChange={(e) => setForm({ ...form, start: e.target.value })}
+                className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm focus:border-sun-500 focus:outline-none"
+              />
+            </label>
+            <label className="text-xs text-gray-500">
+              Hasta
+              <input
+                type="date"
+                value={form.end}
+                onChange={(e) => setForm({ ...form, end: e.target.value })}
+                className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm focus:border-sun-500 focus:outline-none"
+              />
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            disabled={!form.name.trim()}
+            className="w-full rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800 disabled:opacity-40"
+          >
+            Añadir propuesta
+          </button>
+        </form>
+      )}
+
+      {destinations.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-gray-300 py-16 text-center">
+          <p className="text-4xl">🗺️</p>
+          <p className="mt-3 text-sm text-gray-500">
+            Aún no hay destinos. ¡Propón el primero!
+          </p>
+        </div>
+      ) : (
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {ranked.map(({ destination: d, votes: count, votedByMe }, i) => (
+            <article
+              key={d.id}
+              className="group overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:shadow-md"
+            >
+              <div className="relative h-40 w-full bg-gradient-to-br from-sun-200 to-sea-400">
+                {d.imageUrl && (
+                  <img
+                    src={d.imageUrl}
+                    alt={d.name}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                )}
+                {i === 0 && count > 0 && (
+                  <span className="absolute left-3 top-3 rounded-full bg-sun-500 px-2.5 py-1 text-xs font-bold text-white shadow">
+                    🏆 Líder
+                  </span>
+                )}
+                <span className="absolute right-3 top-3 text-3xl drop-shadow">
+                  {d.emoji}
+                </span>
+              </div>
+
+              <div className="space-y-3 p-4">
+                <div>
+                  <h4 className="font-bold text-gray-900">{d.name}</h4>
+                  <p className="text-xs text-gray-500">{d.country}</p>
+                </div>
+                <div className="flex items-center justify-between text-xs text-gray-600">
+                  <span>📅 {formatDateRange(d.suggestedStart, d.suggestedEnd)}</span>
+                  <span className="font-semibold">
+                    {formatBudget(d.estimatedBudget)}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-400">
+                  Propuesto por {d.proposedByName}
+                </p>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => void handleVote(d.id)}
+                    disabled={busyId === d.id}
+                    className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition disabled:opacity-50 ${
+                      votedByMe
+                        ? 'bg-sun-500 text-white shadow-sm hover:brightness-110'
+                        : 'border border-gray-200 text-gray-700 hover:border-sun-400 hover:bg-sun-50'
+                    }`}
+                  >
+                    {votedByMe ? '❤️' : '🤍'} {count}{' '}
+                    {count === 1 ? 'voto' : 'votos'}
+                  </button>
+                  {d.proposedBy === me.id && (
+                    <button
+                      onClick={() => void handleDelete(d.id)}
+                      disabled={busyId === d.id}
+                      className="rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-400 transition hover:border-red-300 hover:text-red-500 disabled:opacity-50"
+                      aria-label="Eliminar destino"
+                    >
+                      🗑️
+                    </button>
+                  )}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
