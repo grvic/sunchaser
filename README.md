@@ -16,23 +16,7 @@ most people are free.
 
 ---
 
-## Why this is a good Fabric Apps demo
-
-| Fabric Apps strength | How Sunchaser shows it |
-|----------------------|------------------------|
-| **Rapid prototyping** | From `npm create` to a deployed URL in minutes — no infra to manage. |
-| **Auth without boilerplate** | Sign-in is Fabric SSO (Entra ID). No auth servers, no token plumbing. |
-| **Row-level security** | You can only edit *your own* votes, availability, and proposals — enforced in the data model, not the UI. |
-| **Data exploration & viz** | The dashboard queries Fabric data through the typed GraphQL client and renders a live ranking + overlap. |
-| **Visual & delightful** | Summer theme, destination cards, emojis, golden-window hero. |
-
-> Fabric Apps is **not** meant for complex multi-step transactions/stored
-> procedures or custom auth providers beyond Fabric SSO and email/password.
-> Sunchaser intentionally stays inside those lines.
-
----
-
-## Try it in 60 seconds (offline demo mode)
+## Local run
 
 No Fabric account needed — runs entirely in-memory with seed data:
 
