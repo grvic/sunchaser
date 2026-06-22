@@ -288,7 +288,7 @@ export function AuthDiamondLogo({ size = 44, className = '' }: LogoProps) {
 export function RayfinWordmark({ className = '' }: { className?: string }) {
   return (
     <span
-      className={`bg-gradient-to-r from-emerald-300 via-sky-300 to-emerald-200 bg-clip-text font-mono text-3xl font-extrabold tracking-tight text-transparent ${className}`}
+      className={`bg-gradient-to-r from-sun-500 via-sea-500 to-sun-400 bg-clip-text font-mono text-3xl font-extrabold tracking-tight text-transparent ${className}`}
     >
       Rayfin
     </span>

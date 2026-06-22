@@ -125,20 +125,14 @@ function TechCard({ tech, highlight }: { tech: Tech; highlight?: boolean }) {
   );
 }
 
-/* ---- Build / Deploy diagram ---- */
-
-function Pill({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-block rounded-full bg-gradient-to-r from-fuchsia-400 via-sky-400 to-emerald-400 px-5 py-1.5 text-sm font-bold text-gray-900 shadow-lg">
-      {children}
-    </span>
-  );
-}
+/* ---- Build / Deploy diagram (light, on-brand) ---- */
 
 function Panel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-3xl bg-gradient-to-r from-emerald-400/60 via-sky-400/40 to-emerald-400/60 p-px shadow-[0_0_40px_-12px_rgba(52,211,153,0.5)]">
-      <div className="rounded-[23px] bg-[#0a0b12] px-6 py-7">{children}</div>
+    <div className="rounded-3xl bg-gradient-to-r from-sun-300/70 via-sea-300/60 to-sun-300/70 p-px shadow-sm">
+      <div className="rounded-[23px] bg-white/85 px-6 py-7 backdrop-blur">
+        {children}
+      </div>
     </div>
   );
 }
@@ -148,12 +142,12 @@ function FlowArrow() {
     <svg width="56" height="14" viewBox="0 0 56 14" className="shrink-0">
       <defs>
         <linearGradient id="flow-a" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#34D399" />
-          <stop offset="100%" stopColor="#38BDF8" />
+          <stop offset="0%" stopColor="#F59E0B" />
+          <stop offset="100%" stopColor="#0EA5E9" />
         </linearGradient>
       </defs>
       <line x1="0" y1="7" x2="46" y2="7" stroke="url(#flow-a)" strokeWidth="2" />
-      <path d="M44 2 L54 7 L44 12 Z" fill="#38BDF8" />
+      <path d="M44 2 L54 7 L44 12 Z" fill="#0EA5E9" />
     </svg>
   );
 }
@@ -168,69 +162,62 @@ function DeployItem({
   return (
     <div className="flex flex-1 basis-28 flex-col items-center gap-2 text-center">
       <div className="flex h-12 w-12 items-center justify-center">{logo}</div>
-      <span className="text-xs font-medium text-gray-200">{label}</span>
+      <span className="text-xs font-medium text-gray-600">{label}</span>
     </div>
   );
 }
 
 function BuildDeployDiagram() {
   return (
-    <div className="rounded-[28px] bg-[#06070a] p-5 sm:p-8">
+    <div className="space-y-1">
       {/* Build */}
-      <div className="relative pt-3">
-        <div className="absolute -top-1 left-1/2 z-10 -translate-x-1/2">
-          <Pill>Build.</Pill>
-        </div>
-        <Panel>
-          <div className="pt-3 text-center">
-            <h3 className="bg-gradient-to-r from-emerald-300 via-sky-300 to-emerald-200 bg-clip-text text-2xl font-bold text-transparent sm:text-3xl">
-              Agentic app development
-            </h3>
-            <div className="mt-4">
-              <RayfinWordmark />
-            </div>
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-sm text-gray-300">
-              <span className="font-medium">Agent</span>
-              <FlowArrow />
-              <span className="font-medium">SDK + CLI</span>
-              <FlowArrow />
-              <span className="font-medium">Your app backend</span>
-            </div>
+      <Panel>
+        <div className="text-center">
+          <h3 className="bg-gradient-to-r from-sun-500 via-sea-500 to-sun-500 bg-clip-text text-2xl font-bold text-transparent sm:text-3xl">
+            Agentic app development
+          </h3>
+          <div className="mt-3">
+            <RayfinWordmark />
           </div>
-        </Panel>
-      </div>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-sm text-gray-700">
+            <span className="inline-flex items-center gap-2 font-semibold text-gray-900">
+              <CopilotCliLogo size={22} />
+              GitHub Copilot CLI
+            </span>
+            <FlowArrow />
+            <span className="font-medium">SDK + CLI</span>
+            <FlowArrow />
+            <span className="font-medium">Your app backend</span>
+          </div>
+        </div>
+      </Panel>
 
       {/* Connector */}
       <div className="flex justify-center py-1">
-        <span className="text-2xl leading-none text-emerald-400/70">↓</span>
+        <span className="text-2xl leading-none text-sun-400">↓</span>
       </div>
 
       {/* Deploy */}
-      <div className="relative pt-3">
-        <div className="absolute -top-1 left-1/2 z-10 -translate-x-1/2">
-          <Pill>Deploy.</Pill>
-        </div>
-        <Panel>
-          <div className="pt-3 text-center">
-            <h3 className="bg-gradient-to-r from-emerald-300 via-sky-300 to-violet-300 bg-clip-text text-2xl font-bold text-transparent sm:text-3xl">
-              Enterprise-grade infrastructure
-            </h3>
-            <div className="mt-6 flex flex-wrap justify-center gap-5">
-              <DeployItem logo={<DatabaseLogo size={40} />} label="Database" />
-              <DeployItem logo={<OneLakeMarkLogo size={40} />} label="OneLake" />
-              <DeployItem
-                logo={<RealTimeLogo size={40} />}
-                label="Real-Time Intelligence"
-              />
-              <DeployItem logo={<FunctionsLogo size={40} />} label="Functions" />
-              <DeployItem
-                logo={<AuthDiamondLogo size={40} />}
-                label="Authentication"
-              />
-            </div>
+      <Panel>
+        <div className="text-center">
+          <h3 className="bg-gradient-to-r from-sea-500 via-sun-500 to-sea-500 bg-clip-text text-2xl font-bold text-transparent sm:text-3xl">
+            Enterprise-grade infrastructure
+          </h3>
+          <div className="mt-6 flex flex-wrap justify-center gap-5">
+            <DeployItem logo={<DatabaseLogo size={40} />} label="Database" />
+            <DeployItem logo={<OneLakeMarkLogo size={40} />} label="OneLake" />
+            <DeployItem
+              logo={<RealTimeLogo size={40} />}
+              label="Real-Time Intelligence"
+            />
+            <DeployItem logo={<FunctionsLogo size={40} />} label="Functions" />
+            <DeployItem
+              logo={<AuthDiamondLogo size={40} />}
+              label="Authentication"
+            />
           </div>
-        </Panel>
-      </div>
+        </div>
+      </Panel>
     </div>
   );
 }

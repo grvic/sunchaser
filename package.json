@@ -28,9 +28,12 @@
     "@microsoft/rayfin-core": "^1.33.2",
     "@microsoft/rayfin-data": "^1.33.2",
     "@tailwindcss/vite": "^4.1.11",
+    "d3-geo": "^3.1.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.1.1"
+    "react-router-dom": "^7.1.1",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
@@ -39,8 +42,10 @@
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
+    "@types/d3-geo": "^3.1.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "@types/topojson-client": "^3.1.5",
     "@vitejs/plugin-react-swc": "^4.2.2",
     "eslint": "^9.28.0",
     "eslint-plugin-react-hooks": "^5.2.0",
