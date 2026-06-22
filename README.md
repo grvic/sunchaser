@@ -122,6 +122,13 @@ See the full step-by-step (with screenshots) in
 
   ![Profile](docs/screenshots/14-profile.png)
 
+- **In-app architecture page** — a clean `/architecture` view that shows the
+  stack (Fabric, Rayfin, React, TypeScript, Vite, Tailwind) with logos and a
+  layered diagram of how it all fits together. Group owners can also rename a
+  group and change its emoji inline from the workspace header.
+
+  ![Architecture](docs/screenshots/15-architecture.png)
+
 ### Adding real users
 
 On Fabric, sign-in is **Entra ID (Fabric SSO)** — "users" are real Microsoft

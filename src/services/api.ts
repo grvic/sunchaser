@@ -119,6 +119,19 @@ export async function joinGroup(
   });
 }
 
+/** Update a group's name and/or emoji. Only the owner passes the RLS policy. */
+export async function updateGroup(
+  groupId: string,
+  input: { name?: string; emoji?: string }
+): Promise<void> {
+  const client = getRayfinClient();
+  const patch: { name?: string; emoji?: string } = {};
+  if (input.name !== undefined) patch.name = input.name.trim();
+  if (input.emoji !== undefined) patch.emoji = input.emoji;
+  if (Object.keys(patch).length === 0) return;
+  await client.data.TripGroup.update({ id: groupId }, patch);
+}
+
 export async function getGroupMembers(groupId: string): Promise<Member[]> {
   const client = getRayfinClient();
   const members = await client.data.GroupMember.select([

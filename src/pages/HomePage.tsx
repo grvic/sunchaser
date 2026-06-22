@@ -100,6 +100,13 @@ export function HomePage() {
           )}
           <NameEditor name={me.name} email={user?.email} onSave={handleRename} />
           <Link
+            to="/architecture"
+            title="Arquitectura"
+            className="hidden text-sm text-gray-600 transition hover:text-gray-900 sm:inline"
+          >
+            Arquitectura
+          </Link>
+          <Link
             to="/profile"
             title="Tu perfil"
             className="transition hover:opacity-80"
@@ -132,6 +139,7 @@ export function HomePage() {
               key={`${active.id}-${me.id}-${me.name}`}
               group={active}
               me={me}
+              onGroupChanged={loadGroups}
             />
           ) : (
             <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">

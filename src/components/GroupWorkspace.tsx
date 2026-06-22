@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { DashboardTab } from '@/components/DashboardTab';
 import { DestinationsTab } from '@/components/DestinationsTab';
 import { AvailabilityTab } from '@/components/AvailabilityTab';
+import { GroupHeader } from '@/components/GroupHeader';
 import {
   getAvailability,
   getDestinations,
@@ -28,9 +29,11 @@ const TABS: { id: Tab; label: string; emoji: string }[] = [
 export function GroupWorkspace({
   group,
   me,
+  onGroupChanged,
 }: {
   group: Group;
   me: CrewUser;
+  onGroupChanged: () => Promise<void>;
 }) {
   const [tab, setTab] = useState<Tab>('dashboard');
   const [members, setMembers] = useState<Member[]>([]);
@@ -60,17 +63,13 @@ export function GroupWorkspace({
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="flex items-center gap-3 border-b border-gray-200 bg-white/70 px-6 py-4 backdrop-blur">
-        <span className="text-3xl">{group.emoji || '🧳'}</span>
-        <div>
-          <h2 className="text-lg font-bold text-gray-900">{group.name}</h2>
-          <p className="text-xs text-gray-500">
-            {members.length} {members.length === 1 ? 'viajero' : 'viajeros'} ·{' '}
-            {destinations.length}{' '}
-            {destinations.length === 1 ? 'destino' : 'destinos'}
-          </p>
-        </div>
-      </div>
+      <GroupHeader
+        group={group}
+        me={me}
+        membersCount={members.length}
+        destinationsCount={destinations.length}
+        onGroupChanged={onGroupChanged}
+      />
 
       <div className="flex gap-1 border-b border-gray-200 bg-white/50 px-4">
         {TABS.map((t) => (

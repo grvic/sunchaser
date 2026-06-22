@@ -4,6 +4,7 @@ import { AuthPage } from '@/components/AuthPage';
 import { useAuth } from '@/hooks/AuthContext';
 import { HomePage } from '@/pages/HomePage';
 import { ProfilePage } from '@/pages/ProfilePage';
+import { ArchitecturePage } from '@/pages/ArchitecturePage';
 
 function AuthGuard({
   children,
@@ -54,6 +55,14 @@ function App() {
           element={
             <AuthGuard requireAuth={true}>
               <ProfilePage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/architecture"
+          element={
+            <AuthGuard requireAuth={true}>
+              <ArchitecturePage />
             </AuthGuard>
           }
         />
