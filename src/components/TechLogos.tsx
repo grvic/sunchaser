@@ -1,6 +1,8 @@
 /** Small, self-contained SVG marks for the architecture page. Stylized,
  * brand-coloured recreations — no external assets or network. */
 
+import fabricLogo from '@/assets/fabric.png';
+
 type LogoProps = { size?: number; className?: string };
 
 export function ReactLogo({ size = 44, className = '' }: LogoProps) {
@@ -76,27 +78,13 @@ export function TailwindLogo({ size = 44, className = '' }: LogoProps) {
 
 export function FabricLogo({ size = 44, className = '' }: LogoProps) {
   return (
-    <svg viewBox="0 0 100 100" width={size} height={size} className={className}>
-      <defs>
-        <linearGradient id="fabric-a" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#0FB5BA" />
-          <stop offset="100%" stopColor="#117865" />
-        </linearGradient>
-        <linearGradient id="fabric-b" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#37C2B1" />
-          <stop offset="100%" stopColor="#0E8A7D" />
-        </linearGradient>
-      </defs>
-      <path
-        d="M20 26 Q20 14 34 14 L70 14 Q56 14 56 30 L56 58 Q56 72 42 72 Q28 72 28 58 L28 30 Q28 26 24 26 Z"
-        fill="url(#fabric-a)"
-      />
-      <path
-        d="M44 42 Q44 30 58 30 L82 30 Q68 30 68 46 L68 70 Q68 86 54 86 Q40 86 40 70 L40 56"
-        fill="url(#fabric-b)"
-        opacity="0.92"
-      />
-    </svg>
+    <img
+      src={fabricLogo}
+      alt="Microsoft Fabric"
+      width={size}
+      height={size}
+      className={`object-contain ${className}`}
+    />
   );
 }
 
@@ -133,3 +121,79 @@ export function GitHubLogo({ size = 44, className = '' }: LogoProps) {
     </svg>
   );
 }
+
+export function CopilotCliLogo({ size = 44, className = '' }: LogoProps) {
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} className={className}>
+      <rect width="100" height="100" rx="18" fill="#0D1117" />
+      <rect x="14" y="22" width="72" height="56" rx="8" fill="#161B22" stroke="#30363D" strokeWidth="2" />
+      <text
+        x="24"
+        y="62"
+        fontFamily="ui-monospace, monospace"
+        fontWeight="800"
+        fontSize="30"
+        fill="#3FB950"
+      >
+        {'>_'}
+      </text>
+      {/* AI sparkle */}
+      <path
+        d="M72 30 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 Z"
+        fill="#A371F7"
+      />
+    </svg>
+  );
+}
+
+export function OneLakeLogo({ size = 44, className = '' }: LogoProps) {
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} className={className}>
+      <defs>
+        <linearGradient id="onelake-a" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#3EC6FF" />
+          <stop offset="100%" stopColor="#0A5BD3" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M50 12 C70 40 80 54 80 66 a30 30 0 1 1 -60 0 C20 54 30 40 50 12 Z"
+        fill="url(#onelake-a)"
+      />
+      <path
+        d="M30 64 q10 -6 20 0 t20 0"
+        fill="none"
+        stroke="#fff"
+        strokeOpacity="0.7"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+      <path
+        d="M34 76 q8 -5 16 0 t16 0"
+        fill="none"
+        stroke="#fff"
+        strokeOpacity="0.45"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+export function EntraLogo({ size = 44, className = '' }: LogoProps) {
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} className={className}>
+      <defs>
+        <linearGradient id="entra-a" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#41B883" />
+          <stop offset="50%" stopColor="#22A6C3" />
+          <stop offset="100%" stopColor="#2C6FE3" />
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#entra-a)" strokeWidth="9" strokeLinecap="round">
+        <path d="M50 50 C50 28 32 24 26 38 C20 52 36 64 50 50 Z" />
+        <path d="M50 50 C50 72 68 76 74 62 C80 48 64 36 50 50 Z" />
+      </g>
+    </svg>
+  );
+}
+

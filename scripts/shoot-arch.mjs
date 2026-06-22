@@ -15,7 +15,7 @@ const shot = async (name, full = true) => {
 
 // Architecture page
 await page.goto(`${baseUrl}/architecture`, { waitUntil: 'networkidle' });
-await page.waitForSelector('text=Con qué está construida', { timeout: 15000 });
+await page.waitForSelector('text=How Sunchaser is built', { timeout: 15000 });
 await page.waitForTimeout(800);
 await shot('15-architecture');
 

@@ -101,10 +101,11 @@ export function HomePage() {
           <NameEditor name={me.name} email={user?.email} onSave={handleRename} />
           <Link
             to="/architecture"
-            title="Arquitectura"
-            className="hidden text-sm text-gray-600 transition hover:text-gray-900 sm:inline"
+            title="Architecture"
+            aria-label="Architecture"
+            className="text-xl leading-none transition hover:scale-110"
           >
-            Arquitectura
+            🎨
           </Link>
           <Link
             to="/profile"
