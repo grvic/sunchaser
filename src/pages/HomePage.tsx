@@ -6,7 +6,7 @@ import { useAuth } from '@/hooks/AuthContext';
 import { getMyGroups, type Group } from '@/services/api';
 
 export function HomePage() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, switchableUsers, switchUser } = useAuth();
   const me: CrewUser = {
     id: user?.id ?? '',
     name: user?.name ?? user?.email?.split('@')[0] ?? 'Viajero',
@@ -44,6 +44,23 @@ export function HomePage() {
           <span className="text-lg font-bold text-gray-900">Sunchaser</span>
         </div>
         <div className="flex items-center gap-4">
+          {switchableUsers.length > 1 && (
+            <label className="flex items-center gap-2 text-sm">
+              <span className="hidden text-gray-500 sm:inline">Ver como</span>
+              <select
+                value={me.id}
+                onChange={(e) => void switchUser(e.target.value)}
+                className="rounded-full border border-sun-200 bg-white/80 px-3 py-1 font-medium text-gray-700 shadow-sm focus:border-sun-400 focus:outline-none"
+                title="Demo: cambia de identidad sin iniciar sesión"
+              >
+                {switchableUsers.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
           <span
             className="hidden text-sm text-gray-600 sm:inline"
             title={user?.email}
@@ -72,7 +89,7 @@ export function HomePage() {
           {loading ? (
             <p className="py-24 text-center text-sm text-gray-400">Cargando…</p>
           ) : active ? (
-            <GroupWorkspace key={active.id} group={active} me={me} />
+            <GroupWorkspace key={`${active.id}-${me.id}`} group={active} me={me} />
           ) : (
             <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
               <p className="text-6xl">🏝️</p>

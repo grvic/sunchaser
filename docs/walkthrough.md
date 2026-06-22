@@ -107,6 +107,19 @@ Everyone marks the date ranges they're free; the dashboard overlaps them.
 
 ![Availability](screenshots/05-availability.png)
 
+### Try it as different users (demo mode)
+
+In demo mode the header shows a **"Ver como"** switcher so you can experience the
+app as any crew member without real sign-in — each identity sees only their own
+groups, votes and availability (row-level security in action). Switching to
+**Lucía**, for example, hides the *Escapada familiar* group she doesn't belong to.
+
+![User switcher](screenshots/06-user-switcher.png)
+
+![Signed in as Lucía](screenshots/07-as-lucia.png)
+
+> 🔁 Regenerate these with `node scripts/shoot-switcher.mjs` (demo server running).
+
 ## 4. Validate locally
 
 ```bash

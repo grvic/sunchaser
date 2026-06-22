@@ -40,6 +40,15 @@ export interface IAuthService {
    * any UI. Returns `null` when not running inside a Fabric iframe.
    */
   initEmbeddedAuth(): Promise<AuthUser | null>;
+
+  /**
+   * Demo-only: switch the active identity without real sign-in. Present only on
+   * {@link DemoAuthService}; `undefined` for Fabric/Mock services.
+   */
+  switchUser?(id: string): Promise<AuthUser>;
+
+  /** Demo-only: identities that {@link switchUser} accepts. */
+  listSwitchableUsers?(): AuthUser[];
 }
 
 /** Map the raw session user shape to the trimmed view used in the UI. */

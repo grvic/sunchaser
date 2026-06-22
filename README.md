@@ -41,9 +41,15 @@ npm install
 npm run demo        # http://localhost:5173
 ```
 
-Demo mode (`VITE_DEMO=1`) swaps the Fabric backend for an in-memory store and a
-fixed signed-in user, so you can click through the whole app offline. It's also
-how the screenshots in [`docs/`](docs/walkthrough.md) are produced.
+Demo mode (`VITE_DEMO=1`) swaps the Fabric backend for an in-memory store, so you
+can click through the whole app offline. It's also how the screenshots in
+[`docs/`](docs/walkthrough.md) are produced.
+
+The header has a **"Ver como"** switcher to experience the app as any of the four
+seeded crew members (Vic, Lucía, Mateo, Noa) — each sees only their own groups,
+votes and availability. To add more demo identities, append to `DEMO_CREW` in
+[`src/services/demoClient.ts`](src/services/demoClient.ts) (and add matching
+`GroupMember` seed rows so they belong to a group).
 
 ## Run against real Fabric
 
@@ -61,6 +67,15 @@ npx rayfin up status              # verify the deployment is healthy
 
 See the full step-by-step (with screenshots) in
 **[`docs/walkthrough.md`](docs/walkthrough.md)**.
+
+### Adding real users
+
+On Fabric, sign-in is **Entra ID (Fabric SSO)** — "users" are real Microsoft
+accounts in your tenant, not app records. To let more people use the deployed
+app: create or invite them in the **Entra ID admin center** (Users → *New user* /
+*Invite external user*) and give them access to the `fabric-apps` workspace. Each
+person signs in with their own account and the row-level `@authenticated`
+policies scope data by their `claims.sub`.
 
 ---
 

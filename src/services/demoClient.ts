@@ -7,7 +7,27 @@
  * uses: a tiny fluent query builder plus `create`, `delete`, and `findById`.
  */
 
-export const DEMO_USER = { id: 'demo-vic', name: 'Vic', email: 'vic@demo.dev' };
+/** Switchable demo identities. Lets you experience the app as each crew member
+ * (own votes, availability and row-level permissions) without real sign-in. */
+export const DEMO_CREW = [
+  { id: 'demo-vic', name: 'Vic', email: 'vic@demo.dev', emoji: '🌅' },
+  { id: 'u-lucia', name: 'Lucía', email: 'lucia@demo.dev', emoji: '🏄‍♀️' },
+  { id: 'u-mateo', name: 'Mateo', email: 'mateo@demo.dev', emoji: '🧭' },
+  { id: 'u-noa', name: 'Noa', email: 'noa@demo.dev', emoji: '🐠' },
+] as const;
+
+export const DEMO_USER = DEMO_CREW[0];
+
+let activeDemoUserId: string = DEMO_CREW[0].id;
+
+export function getActiveDemoUser() {
+  return DEMO_CREW.find((u) => u.id === activeDemoUserId) ?? DEMO_CREW[0];
+}
+
+export function setActiveDemoUser(id: string) {
+  if (DEMO_CREW.some((u) => u.id === id)) activeDemoUserId = id;
+  return getActiveDemoUser();
+}
 
 type Row = Record<string, unknown>;
 type Where = Record<string, { eq: unknown }>;
@@ -87,12 +107,7 @@ function buildDemoData() {
   };
 
   const groupId = 'grp-verano';
-  const crew = [
-    DEMO_USER,
-    { id: 'u-lucia', name: 'Lucía' },
-    { id: 'u-mateo', name: 'Mateo' },
-    { id: 'u-noa', name: 'Noa' },
-  ];
+  const crew = DEMO_CREW;
 
   data.TripGroup.rows.push(
     {

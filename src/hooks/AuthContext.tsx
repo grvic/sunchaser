@@ -18,6 +18,10 @@ interface AuthContextValue {
   signOut: () => Promise<void>;
   isAuthenticated: boolean;
   fabricAuthEnabled: boolean;
+  /** Demo-only switchable identities; empty for Fabric/Mock auth. */
+  switchableUsers: AuthUser[];
+  /** Demo-only: switch the active identity. No-op outside demo mode. */
+  switchUser: (id: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -77,6 +81,20 @@ export function AuthProvider({ children, authService }: AuthProviderProps) {
     }
   }, [authService]);
 
+  const switchUser = useCallback(
+    async (id: string) => {
+      if (!authService.switchUser) return;
+      const next = await authService.switchUser(id);
+      setUser(next);
+    },
+    [authService]
+  );
+
+  const switchableUsers = useMemo(
+    () => authService.listSwitchableUsers?.() ?? [],
+    [authService]
+  );
+
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
@@ -86,8 +104,10 @@ export function AuthProvider({ children, authService }: AuthProviderProps) {
       signOut,
       isAuthenticated: !!user,
       fabricAuthEnabled: authService.fabricAuthEnabled,
+      switchableUsers,
+      switchUser,
     }),
-    [user, loading, error, signIn, signOut, authService]
+    [user, loading, error, signIn, signOut, authService, switchableUsers, switchUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
