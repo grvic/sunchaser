@@ -197,3 +197,101 @@ export function EntraLogo({ size = 44, className = '' }: LogoProps) {
   );
 }
 
+/* ---- Fabric workload marks (Deploy row) ---- */
+
+export function DatabaseLogo({ size = 44, className = '' }: LogoProps) {
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} className={className}>
+      <defs>
+        <linearGradient id="db-a" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#C89BF5" />
+          <stop offset="100%" stopColor="#7A35E0" />
+        </linearGradient>
+      </defs>
+      <path d="M50 16 L82 34 L50 52 L18 34 Z" fill="#D7B4FA" />
+      <path d="M18 34 L50 52 L50 84 L18 66 Z" fill="url(#db-a)" />
+      <path d="M82 34 L50 52 L50 84 L82 66 Z" fill="#6B2BD6" />
+    </svg>
+  );
+}
+
+export function OneLakeMarkLogo({ size = 44, className = '' }: LogoProps) {
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} className={className}>
+      <defs>
+        <radialGradient id="ol-a" cx="0.4" cy="0.35" r="0.8">
+          <stop offset="0%" stopColor="#5AD2FF" />
+          <stop offset="100%" stopColor="#0A4FC4" />
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="36" fill="url(#ol-a)" />
+      <path
+        d="M34 40 C46 30 64 34 66 48 C68 60 56 68 46 64 C58 66 64 56 60 48 C56 40 44 40 38 48 C34 54 38 62 46 64 C34 66 28 52 34 40 Z"
+        fill="#fff"
+        opacity="0.92"
+      />
+    </svg>
+  );
+}
+
+export function RealTimeLogo({ size = 44, className = '' }: LogoProps) {
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} className={className}>
+      <defs>
+        <linearGradient id="rt-a" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#FF7A6B" />
+          <stop offset="100%" stopColor="#D81F12" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M56 12 L26 54 L46 54 L40 88 L74 42 L52 42 L60 12 Z"
+        fill="url(#rt-a)"
+      />
+    </svg>
+  );
+}
+
+export function FunctionsLogo({ size = 44, className = '' }: LogoProps) {
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} className={className}>
+      <defs>
+        <linearGradient id="fn-a" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#5BD66A" />
+          <stop offset="100%" stopColor="#1E9E3E" />
+        </linearGradient>
+      </defs>
+      <rect x="16" y="16" width="68" height="68" rx="16" fill="url(#fn-a)" />
+      <g fill="none" stroke="#fff" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M44 32 C36 32 36 40 36 50 C36 60 36 68 28 68" />
+        <path d="M56 32 C64 32 64 40 64 50 C64 60 64 68 72 68" />
+      </g>
+    </svg>
+  );
+}
+
+export function AuthDiamondLogo({ size = 44, className = '' }: LogoProps) {
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} className={className}>
+      <defs>
+        <linearGradient id="auth-a" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#7CC6FF" />
+          <stop offset="100%" stopColor="#1257C9" />
+        </linearGradient>
+      </defs>
+      <path d="M50 12 L80 42 L50 88 L20 42 Z" fill="url(#auth-a)" />
+      <path d="M50 12 L80 42 L50 50 Z" fill="#fff" opacity="0.22" />
+      <path d="M20 42 L50 50 L50 88 Z" fill="#000" opacity="0.12" />
+    </svg>
+  );
+}
+
+export function RayfinWordmark({ className = '' }: { className?: string }) {
+  return (
+    <span
+      className={`bg-gradient-to-r from-emerald-300 via-sky-300 to-emerald-200 bg-clip-text font-mono text-3xl font-extrabold tracking-tight text-transparent ${className}`}
+    >
+      Rayfin
+    </span>
+  );
+}
+

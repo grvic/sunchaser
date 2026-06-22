@@ -2,13 +2,19 @@ import { Link } from 'react-router-dom';
 
 import { useAuth } from '@/hooks/AuthContext';
 import {
+  AuthDiamondLogo,
   CopilotCliLogo,
+  DatabaseLogo,
   EntraLogo,
   FabricLogo,
+  FunctionsLogo,
   GitHubLogo,
   OneLakeLogo,
+  OneLakeMarkLogo,
   RayfinLogo,
+  RayfinWordmark,
   ReactLogo,
+  RealTimeLogo,
   TailwindLogo,
   TypeScriptLogo,
   ViteLogo,
@@ -119,65 +125,112 @@ function TechCard({ tech, highlight }: { tech: Tech; highlight?: boolean }) {
   );
 }
 
-/* ---- Layered boxes diagram ---- */
+/* ---- Build / Deploy diagram ---- */
 
-function Box({
-  name,
+function Pill({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-block rounded-full bg-gradient-to-r from-fuchsia-400 via-sky-400 to-emerald-400 px-5 py-1.5 text-sm font-bold text-gray-900 shadow-lg">
+      {children}
+    </span>
+  );
+}
+
+function Panel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="rounded-3xl bg-gradient-to-r from-emerald-400/60 via-sky-400/40 to-emerald-400/60 p-px shadow-[0_0_40px_-12px_rgba(52,211,153,0.5)]">
+      <div className="rounded-[23px] bg-[#0a0b12] px-6 py-7">{children}</div>
+    </div>
+  );
+}
+
+function FlowArrow() {
+  return (
+    <svg width="56" height="14" viewBox="0 0 56 14" className="shrink-0">
+      <defs>
+        <linearGradient id="flow-a" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#34D399" />
+          <stop offset="100%" stopColor="#38BDF8" />
+        </linearGradient>
+      </defs>
+      <line x1="0" y1="7" x2="46" y2="7" stroke="url(#flow-a)" strokeWidth="2" />
+      <path d="M44 2 L54 7 L44 12 Z" fill="#38BDF8" />
+    </svg>
+  );
+}
+
+function DeployItem({
   logo,
-  highlight,
-}: {
-  name: string;
-  logo: React.ReactNode;
-  highlight?: boolean;
-}) {
-  return (
-    <div
-      className={`flex flex-1 basis-40 flex-col items-center gap-2 rounded-xl border px-3 py-4 text-center shadow-sm ${
-        highlight
-          ? 'border-sun-400 bg-white ring-2 ring-sun-400'
-          : 'border-gray-200 bg-white/95'
-      }`}
-    >
-      <div className="flex h-10 w-10 items-center justify-center">{logo}</div>
-      <span className="text-sm font-semibold text-gray-800">{name}</span>
-      {highlight && (
-        <span className="rounded-full bg-sun-500 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">
-          ★ built with
-        </span>
-      )}
-    </div>
-  );
-}
-
-function Layer({
   label,
-  tone,
-  children,
 }: {
+  logo: React.ReactNode;
   label: string;
-  tone: 'frontend' | 'rayfin' | 'fabric';
-  children: React.ReactNode;
 }) {
-  const tones = {
-    frontend: 'from-sea-400/15 to-sea-500/10 border-sea-400/30',
-    rayfin: 'from-sun-300/25 to-sun-500/10 border-sun-300/50',
-    fabric: 'from-emerald-300/20 to-teal-500/10 border-emerald-400/30',
-  } as const;
   return (
-    <div className={`rounded-2xl border bg-gradient-to-br p-4 ${tones[tone]}`}>
-      <p className="mb-3 text-xs font-bold uppercase tracking-wide text-gray-500">
-        {label}
-      </p>
-      <div className="flex flex-wrap gap-3">{children}</div>
+    <div className="flex flex-1 basis-28 flex-col items-center gap-2 text-center">
+      <div className="flex h-12 w-12 items-center justify-center">{logo}</div>
+      <span className="text-xs font-medium text-gray-200">{label}</span>
     </div>
   );
 }
 
-function Connector({ label }: { label: string }) {
+function BuildDeployDiagram() {
   return (
-    <div className="flex flex-col items-center py-1.5">
-      <span className="text-[11px] font-medium text-gray-400">{label}</span>
-      <span className="text-2xl leading-none text-gray-300">↓</span>
+    <div className="rounded-[28px] bg-[#06070a] p-5 sm:p-8">
+      {/* Build */}
+      <div className="relative pt-3">
+        <div className="absolute -top-1 left-1/2 z-10 -translate-x-1/2">
+          <Pill>Build.</Pill>
+        </div>
+        <Panel>
+          <div className="pt-3 text-center">
+            <h3 className="bg-gradient-to-r from-emerald-300 via-sky-300 to-emerald-200 bg-clip-text text-2xl font-bold text-transparent sm:text-3xl">
+              Agentic app development
+            </h3>
+            <div className="mt-4">
+              <RayfinWordmark />
+            </div>
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-sm text-gray-300">
+              <span className="font-medium">Agent</span>
+              <FlowArrow />
+              <span className="font-medium">SDK + CLI</span>
+              <FlowArrow />
+              <span className="font-medium">Your app backend</span>
+            </div>
+          </div>
+        </Panel>
+      </div>
+
+      {/* Connector */}
+      <div className="flex justify-center py-1">
+        <span className="text-2xl leading-none text-emerald-400/70">↓</span>
+      </div>
+
+      {/* Deploy */}
+      <div className="relative pt-3">
+        <div className="absolute -top-1 left-1/2 z-10 -translate-x-1/2">
+          <Pill>Deploy.</Pill>
+        </div>
+        <Panel>
+          <div className="pt-3 text-center">
+            <h3 className="bg-gradient-to-r from-emerald-300 via-sky-300 to-violet-300 bg-clip-text text-2xl font-bold text-transparent sm:text-3xl">
+              Enterprise-grade infrastructure
+            </h3>
+            <div className="mt-6 flex flex-wrap justify-center gap-5">
+              <DeployItem logo={<DatabaseLogo size={40} />} label="Database" />
+              <DeployItem logo={<OneLakeMarkLogo size={40} />} label="OneLake" />
+              <DeployItem
+                logo={<RealTimeLogo size={40} />}
+                label="Real-Time Intelligence"
+              />
+              <DeployItem logo={<FunctionsLogo size={40} />} label="Functions" />
+              <DeployItem
+                logo={<AuthDiamondLogo size={40} />}
+                label="Authentication"
+              />
+            </div>
+          </div>
+        </Panel>
+      </div>
     </div>
   );
 }
@@ -225,33 +278,7 @@ export function ArchitecturePage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-            <Layer label="Frontend" tone="frontend">
-              <Box
-                name="GitHub Copilot CLI"
-                logo={<CopilotCliLogo size={36} />}
-                highlight
-              />
-              <Box name="React" logo={<ReactLogo size={32} />} />
-              <Box name="TypeScript" logo={<TypeScriptLogo size={32} />} />
-              <Box name="Vite" logo={<ViteLogo size={32} />} />
-              <Box name="Tailwind CSS" logo={<TailwindLogo size={32} />} />
-            </Layer>
-
-            <Connector label="typed client · npx rayfin up" />
-
-            <Layer label="Backend SDK" tone="rayfin">
-              <Box name="Rayfin SDK" logo={<RayfinLogo size={32} />} />
-            </Layer>
-
-            <Connector label="provisions & deploys" />
-
-            <Layer label="Platform & data" tone="fabric">
-              <Box name="Microsoft Fabric" logo={<FabricLogo size={32} />} />
-              <Box name="OneLake" logo={<OneLakeLogo size={32} />} />
-              <Box name="Microsoft Entra ID" logo={<EntraLogo size={32} />} />
-            </Layer>
-          </div>
+          <BuildDeployDiagram />
         </section>
 
         {/* Frontend cards */}

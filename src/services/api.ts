@@ -67,8 +67,22 @@ export async function getMyGroups(userId: string): Promise<Group[]> {
     .where({ user_id: { eq: userId } })
     .execute();
 
+  const ids = [...new Set(memberships.map((m) => m.group_id))];
   const groups = await Promise.all(
-    memberships.map((m) => client.data.TripGroup.findById(m.group_id))
+    ids.map((id) =>
+      client.data.TripGroup.select([
+        'id',
+        'name',
+        'emoji',
+        'theme',
+        'owner_id',
+        'ownerName',
+        'createdAt',
+      ])
+        .where({ id: { eq: id } })
+        .execute()
+        .then((rows) => rows[0])
+    )
   );
 
   return groups
