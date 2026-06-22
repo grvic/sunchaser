@@ -4,6 +4,7 @@ import {
   uuid,
   text,
   int,
+  decimal,
   date,
 } from '@microsoft/rayfin-core';
 
@@ -25,6 +26,8 @@ export class Destination {
   @text({ max: 16 }) emoji!: string;
   @text({ max: 600 }) imageUrl!: string;
   @int() estimatedBudget!: number;
+  @decimal({ precision: 8, scale: 4 }) lat!: number;
+  @decimal({ precision: 8, scale: 4 }) lng!: number;
   @date() suggestedStart!: Date;
   @date() suggestedEnd!: Date;
   @text() proposedBy!: string;

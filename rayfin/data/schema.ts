@@ -3,6 +3,7 @@ import { Destination } from './Destination.js';
 import { GroupMember } from './GroupMember.js';
 import { Profile } from './Profile.js';
 import { TripGroup } from './TripGroup.js';
+import { Trip } from './Trip.js';
 import { Vote } from './Vote.js';
 
 export type SunchaserSchema = {
@@ -12,6 +13,7 @@ export type SunchaserSchema = {
   Vote: Vote;
   Availability: Availability;
   Profile: Profile;
+  Trip: Trip;
 };
 
 export const schema = [
@@ -21,4 +23,5 @@ export const schema = [
   Vote,
   Availability,
   Profile,
+  Trip,
 ];

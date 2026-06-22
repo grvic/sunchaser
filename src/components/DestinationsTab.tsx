@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { formatBudget, formatDateRange, rankDestinations } from '@/lib/overlap';
+import { coordsFor } from '@/lib/geo';
 import { DESTINATION_PRESETS } from '@/lib/presets';
 import {
   createDestination,
@@ -10,6 +11,7 @@ import {
   type Group,
   type VoteItem,
 } from '@/services/api';
+import { DestinationScene } from '@/components/DestinationScene';
 import type { CrewUser } from '@/components/GroupWorkspace';
 
 function defaultSummerRange(): { start: string; end: string } {
@@ -39,8 +41,7 @@ export function DestinationsTab({
     name: '',
     country: '',
     emoji: '✈️',
-    imageUrl: '',
-    estimatedBudget: 800,
+    estimatedBudget: '',
     start: range.start,
     end: range.end,
   });
@@ -68,20 +69,24 @@ export function DestinationsTab({
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name.trim()) return;
+    const name = form.name.trim();
+    const country = form.country.trim();
+    const coords = coordsFor(name, country) ?? { lat: 20, lng: 0 };
     await createDestination(
       {
         group_id: group.id,
-        name: form.name.trim(),
-        country: form.country.trim(),
+        name,
+        country,
         emoji: form.emoji || '✈️',
-        imageUrl: form.imageUrl,
         estimatedBudget: Number(form.estimatedBudget) || 0,
+        lat: coords.lat,
+        lng: coords.lng,
         suggestedStart: new Date(form.start),
         suggestedEnd: new Date(form.end),
       },
       me
     );
-    setForm({ ...form, name: '', country: '', imageUrl: '' });
+    setForm({ ...form, name: '', country: '', estimatedBudget: '' });
     setShowForm(false);
     await onChanged();
   };
@@ -120,8 +125,7 @@ export function DestinationsTab({
                       name: p.name,
                       country: p.country,
                       emoji: p.emoji,
-                      imageUrl: p.imageUrl,
-                      estimatedBudget: p.estimatedBudget,
+                      estimatedBudget: String(p.estimatedBudget),
                     }))
                   }
                   className="rounded-full border border-gray-200 bg-white px-3 py-1 text-sm transition hover:border-sun-400 hover:bg-sun-50"
@@ -157,7 +161,7 @@ export function DestinationsTab({
               min={0}
               value={form.estimatedBudget}
               onChange={(e) =>
-                setForm({ ...form, estimatedBudget: Number(e.target.value) })
+                setForm({ ...form, estimatedBudget: e.target.value })
               }
               placeholder="Presupuesto (€)"
               className="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm focus:border-sun-500 focus:outline-none"
@@ -206,23 +210,17 @@ export function DestinationsTab({
               key={d.id}
               className="group overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:shadow-md"
             >
-              <div className="relative h-40 w-full bg-gradient-to-br from-sun-200 to-sea-400">
-                {d.imageUrl && (
-                  <img
-                    src={d.imageUrl}
-                    alt={d.name}
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                )}
+              <div className="relative h-40 w-full overflow-hidden bg-gradient-to-br from-sun-200 to-sea-400">
+                <DestinationScene
+                  name={d.name}
+                  emoji={d.emoji}
+                  className="h-full w-full"
+                />
                 {i === 0 && count > 0 && (
                   <span className="absolute left-3 top-3 rounded-full bg-sun-500 px-2.5 py-1 text-xs font-bold text-white shadow">
                     🏆 Líder
                   </span>
                 )}
-                <span className="absolute right-3 top-3 text-3xl drop-shadow">
-                  {d.emoji}
-                </span>
               </div>
 
               <div className="space-y-3 p-4">

@@ -26,6 +26,8 @@ export interface DestinationItem {
   emoji: string;
   imageUrl: string;
   estimatedBudget: number;
+  lat: number;
+  lng: number;
   suggestedStart: Date;
   suggestedEnd: Date;
   proposedBy: string;
@@ -147,6 +149,8 @@ export async function getDestinations(
     'emoji',
     'imageUrl',
     'estimatedBudget',
+    'lat',
+    'lng',
     'suggestedStart',
     'suggestedEnd',
     'proposedBy',
@@ -174,8 +178,10 @@ export async function createDestination(
     name: string;
     country: string;
     emoji: string;
-    imageUrl: string;
+    imageUrl?: string;
     estimatedBudget: number;
+    lat: number;
+    lng: number;
     suggestedStart: Date;
     suggestedEnd: Date;
   },
@@ -184,6 +190,7 @@ export async function createDestination(
   const client = getRayfinClient();
   const created = (await client.data.Destination.create({
     ...input,
+    imageUrl: input.imageUrl ?? '',
     proposedBy: user.id,
     proposedByName: user.name,
     createdAt: new Date(),
@@ -343,6 +350,7 @@ export async function setMyDisplayName(
     await client.data.Profile.create({
       user_id: userId,
       displayName: name,
+      avatar: '',
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -375,4 +383,116 @@ export async function setMyDisplayName(
       client.data.TripGroup.update({ id: g.id }, { ownerName: name })
     ),
   ]);
+}
+
+/** Read the user's avatar config (opaque JSON string), or '' if unset. */
+export async function getMyAvatar(userId: string): Promise<string> {
+  const client = getRayfinClient();
+  const rows = await client.data.Profile.select(['avatar'])
+    .where({ user_id: { eq: userId } })
+    .execute();
+  return rows[0]?.avatar ?? '';
+}
+
+/** Persist the user's avatar config, upserting their Profile. */
+export async function setMyAvatar(
+  userId: string,
+  avatar: string
+): Promise<void> {
+  const client = getRayfinClient();
+  const existing = await client.data.Profile.select(['id'])
+    .where({ user_id: { eq: userId } })
+    .execute();
+  if (existing.length > 0) {
+    await client.data.Profile.update(
+      { id: existing[0].id },
+      { avatar, updatedAt: new Date() }
+    );
+  } else {
+    await client.data.Profile.create({
+      user_id: userId,
+      displayName: '',
+      avatar,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Personal trips (private per-user calendar)
+// ---------------------------------------------------------------------------
+
+export interface TripItem {
+  id: string;
+  user_id: string;
+  title: string;
+  emoji: string;
+  color: string;
+  startDate: Date;
+  endDate: Date;
+  createdAt: Date;
+}
+
+export async function getMyTrips(userId: string): Promise<TripItem[]> {
+  const client = getRayfinClient();
+  const rows = await client.data.Trip.select([
+    'id',
+    'user_id',
+    'title',
+    'emoji',
+    'color',
+    'startDate',
+    'endDate',
+    'createdAt',
+  ])
+    .where({ user_id: { eq: userId } })
+    .orderBy({ startDate: 'asc' })
+    .execute();
+  return rows.map(
+    (t) =>
+      ({
+        ...t,
+        startDate: toDate(t.startDate),
+        endDate: toDate(t.endDate),
+        createdAt: toDate(t.createdAt),
+      }) as TripItem
+  );
+}
+
+export async function createTrip(
+  userId: string,
+  input: {
+    title: string;
+    emoji: string;
+    color: string;
+    startDate: Date;
+    endDate: Date;
+  }
+): Promise<void> {
+  const client = getRayfinClient();
+  await client.data.Trip.create({
+    ...input,
+    user_id: userId,
+    createdAt: new Date(),
+  });
+}
+
+export async function updateTrip(
+  id: string,
+  input: {
+    title: string;
+    emoji: string;
+    color: string;
+    startDate: Date;
+    endDate: Date;
+  }
+): Promise<void> {
+  const client = getRayfinClient();
+  await client.data.Trip.update({ id }, input);
+}
+
+export async function deleteTrip(id: string): Promise<void> {
+  const client = getRayfinClient();
+  await client.data.Trip.delete({ id });
 }

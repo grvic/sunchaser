@@ -11,6 +11,10 @@ import type {
   VoteItem,
 } from '@/services/api';
 import type { CrewUser } from '@/components/GroupWorkspace';
+import { VoteMap } from '@/components/charts/VoteMap';
+import { VotePoll } from '@/components/charts/VotePoll';
+import { BudgetChart } from '@/components/charts/BudgetChart';
+import { AvailabilityGantt } from '@/components/charts/AvailabilityGantt';
 
 function StatCard({
   emoji,
@@ -122,6 +126,22 @@ export function DashboardTab({
           </div>
         </div>
       )}
+
+      {/* Visualizations */}
+      {destinations.length > 0 && (
+        <VoteMap destinations={destinations} votes={votes} />
+      )}
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <VotePoll
+          destinations={destinations}
+          votes={votes}
+          members={members}
+        />
+        <BudgetChart destinations={destinations} />
+      </div>
+
+      <AvailabilityGantt availability={availability} />
 
       {/* Ranking */}
       <div>

@@ -50,6 +50,8 @@ describe('rankDestinations', () => {
     emoji: '🏖️',
     imageUrl: '',
     estimatedBudget: 100,
+    lat: 0,
+    lng: 0,
     suggestedStart: new Date(),
     suggestedEnd: new Date(),
     proposedBy: 'u',

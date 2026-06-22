@@ -15,6 +15,7 @@ export class Profile {
   @uuid() id!: string;
   @text() user_id!: string;
   @text({ min: 1, max: 120 }) displayName!: string;
+  @text({ max: 200 }) avatar!: string;
   @date() createdAt!: Date;
   @date() updatedAt!: Date;
 }

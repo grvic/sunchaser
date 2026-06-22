@@ -119,6 +119,7 @@ function buildDemoData() {
     Vote: new Table(),
     Availability: new Table(),
     Profile: new Table(),
+    Trip: new Table(),
   };
 
   const groupId = 'grp-verano';
@@ -163,10 +164,10 @@ function buildDemoData() {
   });
 
   const dests = [
-    { id: 'd-ibiza', name: 'Ibiza', country: 'España', emoji: '🏖️', seed: 'ibiza', budget: 750, start: 45, len: 7 },
-    { id: 'd-santorini', name: 'Santorini', country: 'Grecia', emoji: '🌅', seed: 'santorini', budget: 1100, start: 50, len: 6 },
-    { id: 'd-lisboa', name: 'Lisboa', country: 'Portugal', emoji: '🚋', seed: 'lisboa', budget: 600, start: 40, len: 5 },
-    { id: 'd-bali', name: 'Bali', country: 'Indonesia', emoji: '🌴', seed: 'bali', budget: 1600, start: 60, len: 10 },
+    { id: 'd-ibiza', name: 'Ibiza', country: 'España', emoji: '🏖️', seed: 'ibiza', budget: 750, start: 45, len: 7, lat: 38.98, lng: 1.43 },
+    { id: 'd-santorini', name: 'Santorini', country: 'Grecia', emoji: '🌅', seed: 'santorini', budget: 1100, start: 50, len: 6, lat: 36.39, lng: 25.46 },
+    { id: 'd-lisboa', name: 'Lisboa', country: 'Portugal', emoji: '🚋', seed: 'lisboa', budget: 600, start: 40, len: 5, lat: 38.72, lng: -9.14 },
+    { id: 'd-bali', name: 'Bali', country: 'Indonesia', emoji: '🌴', seed: 'bali', budget: 1600, start: 60, len: 10, lat: -8.34, lng: 115.09 },
   ];
   for (const d of dests) {
     const range = daysFromNow(d.start, d.len);
@@ -176,8 +177,10 @@ function buildDemoData() {
       name: d.name,
       country: d.country,
       emoji: d.emoji,
-      imageUrl: `https://picsum.photos/seed/sunchaser-${d.seed}/800/600`,
+      imageUrl: '',
       estimatedBudget: d.budget,
+      lat: d.lat,
+      lng: d.lng,
       suggestedStart: range.startDate,
       suggestedEnd: range.endDate,
       proposedBy: crew[Math.floor(Math.random() * crew.length)].id,
@@ -220,6 +223,26 @@ function buildDemoData() {
       group_id: groupId,
       user_id,
       displayName,
+      startDate: range.startDate,
+      endDate: range.endDate,
+      createdAt: new Date(),
+    });
+  }
+
+  // Personal trips for the demo user (private calendar showcase).
+  const trips: [string, string, string, string, number, number][] = [
+    ['t-vic-1', 'Escapada a Ibiza', '🏖️', '#f59e0b', 45, 7],
+    ['t-vic-2', 'Finde en Lisboa', '🚋', '#10b981', 12, 3],
+    ['t-vic-3', 'Visita familia', '🏡', '#6366f1', 75, 4],
+  ];
+  for (const [id, title, emoji, color, start, len] of trips) {
+    const range = daysFromNow(start, len);
+    data.Trip.rows.push({
+      id,
+      user_id: DEMO_USER.id,
+      title,
+      emoji,
+      color,
       startDate: range.startDate,
       endDate: range.endDate,
       createdAt: new Date(),

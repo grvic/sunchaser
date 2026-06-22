@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
+import { Avatar } from '@/components/Avatar';
 import { GroupSidebar } from '@/components/GroupSidebar';
 import { GroupWorkspace, type CrewUser } from '@/components/GroupWorkspace';
 import { NameEditor } from '@/components/NameEditor';
 import { useAuth } from '@/hooks/AuthContext';
 import {
+  getMyAvatar,
   getMyDisplayName,
   getMyGroups,
   setMyDisplayName,
@@ -15,6 +18,7 @@ export function HomePage() {
   const { user, signOut, switchableUsers, switchUser } = useAuth();
   const baseName = user?.name ?? user?.email?.split('@')[0] ?? 'Viajero';
   const [displayName, setDisplayName] = useState<string | null>(null);
+  const [avatar, setAvatar] = useState<string>('');
   const me: CrewUser = {
     id: user?.id ?? '',
     name: displayName ?? baseName,
@@ -48,6 +52,9 @@ export function HomePage() {
     let cancelled = false;
     void getMyDisplayName(user.id, baseName).then((name) => {
       if (!cancelled) setDisplayName(name);
+    });
+    void getMyAvatar(user.id).then((av) => {
+      if (!cancelled) setAvatar(av);
     });
     return () => {
       cancelled = true;
@@ -92,6 +99,13 @@ export function HomePage() {
             </label>
           )}
           <NameEditor name={me.name} email={user?.email} onSave={handleRename} />
+          <Link
+            to="/profile"
+            title="Tu perfil"
+            className="transition hover:opacity-80"
+          >
+            <Avatar config={avatar} size={32} className="rounded-full shadow-sm" />
+          </Link>
           <button
             onClick={() => void signOut()}
             className="text-sm text-gray-400 transition hover:text-gray-700"

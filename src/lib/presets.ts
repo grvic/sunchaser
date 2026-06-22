@@ -3,22 +3,20 @@ export interface DestinationPreset {
   name: string;
   country: string;
   emoji: string;
-  imageUrl: string;
   estimatedBudget: number;
+  lat: number;
+  lng: number;
 }
 
-const img = (seed: string) =>
-  `https://picsum.photos/seed/sunchaser-${seed}/800/600`;
-
 export const DESTINATION_PRESETS: DestinationPreset[] = [
-  { name: 'Ibiza', country: 'España', emoji: '🏖️', imageUrl: img('ibiza'), estimatedBudget: 750 },
-  { name: 'Santorini', country: 'Grecia', emoji: '🌅', imageUrl: img('santorini'), estimatedBudget: 1100 },
-  { name: 'Lisboa', country: 'Portugal', emoji: '🚋', imageUrl: img('lisboa'), estimatedBudget: 600 },
-  { name: 'Amalfi', country: 'Italia', emoji: '🍋', imageUrl: img('amalfi'), estimatedBudget: 1300 },
-  { name: 'Bali', country: 'Indonesia', emoji: '🌴', imageUrl: img('bali'), estimatedBudget: 1600 },
-  { name: 'Costa Rica', country: 'Costa Rica', emoji: '🦥', imageUrl: img('costarica'), estimatedBudget: 1800 },
-  { name: 'Mallorca', country: 'España', emoji: '⛵', imageUrl: img('mallorca'), estimatedBudget: 700 },
-  { name: 'Croacia', country: 'Croacia', emoji: '🛶', imageUrl: img('croacia'), estimatedBudget: 900 },
+  { name: 'Ibiza', country: 'España', emoji: '🏖️', estimatedBudget: 750, lat: 38.91, lng: 1.43 },
+  { name: 'Santorini', country: 'Grecia', emoji: '🌅', estimatedBudget: 1100, lat: 36.39, lng: 25.46 },
+  { name: 'Lisboa', country: 'Portugal', emoji: '🚋', estimatedBudget: 600, lat: 38.72, lng: -9.14 },
+  { name: 'Amalfi', country: 'Italia', emoji: '🍋', estimatedBudget: 1300, lat: 40.63, lng: 14.6 },
+  { name: 'Bali', country: 'Indonesia', emoji: '🌴', estimatedBudget: 1600, lat: -8.34, lng: 115.09 },
+  { name: 'Costa Rica', country: 'Costa Rica', emoji: '🦥', estimatedBudget: 1800, lat: 9.75, lng: -83.75 },
+  { name: 'Mallorca', country: 'España', emoji: '⛵', estimatedBudget: 700, lat: 39.57, lng: 2.65 },
+  { name: 'Croacia', country: 'Croacia', emoji: '🛶', estimatedBudget: 900, lat: 45.1, lng: 15.2 },
 ];
 
 export const GROUP_THEMES: { id: string; label: string; emoji: string }[] = [
