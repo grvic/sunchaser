@@ -316,7 +316,7 @@ export function ArchitecturePage() {
             <p className="text-sm font-medium uppercase tracking-wide text-sun-600">
               🎨 Architecture
             </p>
-            <h1 className="mt-1 text-3xl font-bold text-gray-900">
+            <h1 className="mt-1 bg-gradient-to-r from-sun-500 via-sea-500 to-sun-500 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl">
               How Sunchaser is built
             </h1>
             <p className="mt-2 max-w-2xl text-gray-500">
