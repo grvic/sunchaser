@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { formatBudget, formatDateRange, rankDestinations } from '@/lib/overlap';
+import { formatBudget, rankDestinations } from '@/lib/overlap';
 import { coordsFor } from '@/lib/geo';
 import { DESTINATION_PRESETS } from '@/lib/presets';
 import {
@@ -13,11 +13,6 @@ import {
 } from '@/services/api';
 import { DestinationScene } from '@/components/DestinationScene';
 import type { CrewUser } from '@/components/GroupWorkspace';
-
-function defaultSummerRange(): { start: string; end: string } {
-  const year = new Date().getFullYear();
-  return { start: `${year}-07-15`, end: `${year}-07-22` };
-}
 
 export function DestinationsTab({
   group,
@@ -36,14 +31,11 @@ export function DestinationsTab({
   const [busyId, setBusyId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
 
-  const range = defaultSummerRange();
   const [form, setForm] = useState({
     name: '',
     country: '',
     emoji: '✈️',
     estimatedBudget: '',
-    start: range.start,
-    end: range.end,
   });
 
   const handleVote = async (destinationId: string) => {
@@ -72,6 +64,7 @@ export function DestinationsTab({
     const name = form.name.trim();
     const country = form.country.trim();
     const coords = coordsFor(name, country) ?? { lat: 20, lng: 0 };
+    const now = new Date();
     await createDestination(
       {
         group_id: group.id,
@@ -81,8 +74,8 @@ export function DestinationsTab({
         estimatedBudget: Number(form.estimatedBudget) || 0,
         lat: coords.lat,
         lng: coords.lng,
-        suggestedStart: new Date(form.start),
-        suggestedEnd: new Date(form.end),
+        suggestedStart: now,
+        suggestedEnd: now,
       },
       me
     );
@@ -166,25 +159,12 @@ export function DestinationsTab({
               placeholder="Presupuesto (€)"
               className="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm focus:border-sun-500 focus:outline-none"
             />
-            <label className="text-xs text-gray-500">
-              Desde
-              <input
-                type="date"
-                value={form.start}
-                onChange={(e) => setForm({ ...form, start: e.target.value })}
-                className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm focus:border-sun-500 focus:outline-none"
-              />
-            </label>
-            <label className="text-xs text-gray-500">
-              Hasta
-              <input
-                type="date"
-                value={form.end}
-                onChange={(e) => setForm({ ...form, end: e.target.value })}
-                className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm focus:border-sun-500 focus:outline-none"
-              />
-            </label>
           </div>
+
+          <p className="text-xs text-gray-400">
+            🗓️ Las fechas se gestionan en la pestaña{' '}
+            <span className="font-medium text-gray-500">Disponibilidad</span>.
+          </p>
 
           <button
             type="submit"
@@ -229,14 +209,13 @@ export function DestinationsTab({
                   <p className="text-xs text-gray-500">{d.country}</p>
                 </div>
                 <div className="flex items-center justify-between text-xs text-gray-600">
-                  <span>📅 {formatDateRange(d.suggestedStart, d.suggestedEnd)}</span>
-                  <span className="font-semibold">
+                  <span className="text-gray-400">
+                    Propuesto por {d.proposedByName}
+                  </span>
+                  <span className="font-semibold text-gray-700">
                     {formatBudget(d.estimatedBudget)}
                   </span>
                 </div>
-                <p className="text-xs text-gray-400">
-                  Propuesto por {d.proposedByName}
-                </p>
 
                 <div className="flex items-center gap-2">
                   <button
