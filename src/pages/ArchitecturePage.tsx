@@ -154,109 +154,93 @@ function FlowArrow() {
   );
 }
 
-/* On-brand infrastructure tiles — rounded squares with soft sun/sea gradients */
-const INFRA: {
-  label: string;
-  id: string;
-  from: string;
-  to: string;
-  glyph: React.ReactNode;
-}[] = [
+/* On-brand caricatures of the official Fabric product logos — faithful shape
+   and colour, redrawn as clean flat SVGs that match the web's look. */
+const INFRA: { label: string; icon: React.ReactNode }[] = [
   {
     label: 'Database',
-    id: 'infra-db',
-    from: '#38BDF8',
-    to: '#0EA5E9',
-    glyph: (
-      <g
-        fill="none"
-        stroke="#fff"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <ellipse cx="24" cy="16" rx="9" ry="3.6" />
-        <path d="M15 16 v16 a9 3.6 0 0 0 18 0 V16" />
-        <path d="M15 24 a9 3.6 0 0 0 18 0" />
-      </g>
+    // Fabric SQL Database — purple folded ribbon
+    icon: (
+      <svg width="46" height="46" viewBox="0 0 48 48" className="drop-shadow-sm">
+        <polygon points="24,13 11,17 11,31 24,35" fill="#7C3AED" />
+        <polygon points="24,13 37,17 37,31 24,35" fill="#A78BFA" />
+        <polygon points="24,13 37,17 24,21 11,17" fill="#C4B5FD" />
+      </svg>
     ),
   },
   {
     label: 'OneLake',
-    id: 'infra-lake',
-    from: '#22D3EE',
-    to: '#06B6D4',
-    glyph: (
-      <path
-        d="M24 13 C24 13 31 20.5 31 26 a7 7 0 0 1 -14 0 C17 20.5 24 13 24 13 Z"
-        fill="#fff"
-      />
+    // OneLake — blue sphere with a white swoosh
+    icon: (
+      <svg width="46" height="46" viewBox="0 0 48 48" className="drop-shadow-sm">
+        <defs>
+          <linearGradient id="ol-top" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#5AC8FA" />
+            <stop offset="100%" stopColor="#2C8AE8" />
+          </linearGradient>
+          <clipPath id="ol-clip">
+            <circle cx="24" cy="24" r="17" />
+          </clipPath>
+        </defs>
+        <g clipPath="url(#ol-clip)">
+          <rect x="7" y="7" width="34" height="34" fill="url(#ol-top)" />
+          <path d="M7 27 Q15 21 24 27 T41 27 V41 H7 Z" fill="#1763C9" />
+          <path
+            d="M6 25 Q15 18 24 25 T42 25"
+            fill="none"
+            stroke="#fff"
+            strokeWidth="2.6"
+            strokeLinecap="round"
+          />
+          <ellipse cx="18" cy="15" rx="7" ry="3.4" fill="#fff" opacity="0.3" />
+        </g>
+      </svg>
     ),
   },
   {
     label: 'Real-Time Intelligence',
-    id: 'infra-rti',
-    from: '#FBBF24',
-    to: '#F59E0B',
-    glyph: <path d="M26.5 12 L16.5 27 H23 L21.5 36 L31.5 20 H25 Z" fill="#fff" />,
+    // Real-Time Intelligence — red lightning bolt
+    icon: (
+      <svg width="46" height="46" viewBox="0 0 48 48" className="drop-shadow-sm">
+        <defs>
+          <linearGradient id="rti-g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#FB7185" />
+            <stop offset="100%" stopColor="#E11D48" />
+          </linearGradient>
+        </defs>
+        <path d="M28 6 L13 26 H22 L19 42 L35 20 H26 Z" fill="url(#rti-g)" />
+      </svg>
+    ),
   },
   {
     label: 'Functions',
-    id: 'infra-fn',
-    from: '#FB923C',
-    to: '#F97316',
-    glyph: (
-      <g
-        fill="none"
-        stroke="#fff"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M21 13 c-3 0 -3 3 -3 5 0 2 -1.6 3 -3 3 1.4 0 3 1 3 3 0 2 0 5 3 5" />
-        <path d="M27 13 c3 0 3 3 3 5 0 2 1.6 3 3 3 -1.4 0 -3 1 -3 3 0 2 0 5 -3 5" />
-      </g>
+    // Fabric Data Factory / Functions — green folded ribbon
+    icon: (
+      <svg width="46" height="46" viewBox="0 0 48 48" className="drop-shadow-sm">
+        <polygon points="24,13 11,17 11,31 24,35" fill="#15803D" />
+        <polygon points="24,13 37,17 37,31 24,35" fill="#4ADE80" />
+        <polygon points="24,13 37,17 24,21 11,17" fill="#86EFAC" />
+      </svg>
     ),
   },
   {
     label: 'Authentication',
-    id: 'infra-auth',
-    from: '#60A5FA',
-    to: '#3B82F6',
-    glyph: (
-      <g>
-        <rect x="15" y="22" width="18" height="13" rx="3" fill="#fff" />
-        <path
-          d="M19 22 v-3 a5 5 0 0 1 10 0 v3"
-          fill="none"
-          stroke="#fff"
-          strokeWidth="2.4"
-          strokeLinecap="round"
-        />
-        <circle cx="24" cy="27.5" r="1.7" fill="#3B82F6" />
-        <rect x="23.2" y="27.5" width="1.6" height="4" rx="0.8" fill="#3B82F6" />
-      </g>
+    // Faceted light-blue diamond
+    icon: (
+      <svg width="46" height="46" viewBox="0 0 48 48" className="drop-shadow-sm">
+        <polygon points="24,6 9,21 24,21" fill="#7DD3FC" />
+        <polygon points="24,6 39,21 24,21" fill="#BAE6FD" />
+        <polygon points="9,21 24,21 24,42" fill="#38BDF8" />
+        <polygon points="39,21 24,21 24,42" fill="#0EA5E9" />
+      </svg>
     ),
   },
 ];
 
-function InfraTile({
-  item,
-}: {
-  item: (typeof INFRA)[number];
-}) {
+function InfraTile({ item }: { item: (typeof INFRA)[number] }) {
   return (
     <div className="flex flex-1 basis-28 flex-col items-center gap-2 text-center">
-      <svg width="48" height="48" viewBox="0 0 48 48" className="drop-shadow-sm">
-        <defs>
-          <linearGradient id={item.id} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={item.from} />
-            <stop offset="100%" stopColor={item.to} />
-          </linearGradient>
-        </defs>
-        <rect width="48" height="48" rx="14" fill={`url(#${item.id})`} />
-        {item.glyph}
-      </svg>
+      {item.icon}
       <span className="text-xs font-medium text-gray-600">{item.label}</span>
     </div>
   );
@@ -291,7 +275,7 @@ function BuildDeployDiagram() {
       <Panel>
         <div className="flex flex-wrap justify-center gap-5">
           {INFRA.map((item) => (
-            <InfraTile key={item.id} item={item} />
+            <InfraTile key={item.label} item={item} />
           ))}
         </div>
       </Panel>

@@ -60,7 +60,7 @@ export function AvailabilityGantt({
         className="flex w-full items-center justify-between px-5 py-4 text-left"
       >
         <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-          📅 Disponibilidad de la cuadrilla
+          📅 Disponibilidad del grupo
         </h3>
         <span className="text-gray-400">{open ? '▲' : '▼'}</span>
       </button>
