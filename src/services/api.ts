@@ -154,6 +154,33 @@ export async function updateGroup(
   await client.data.TripGroup.update({ id: groupId }, patch);
 }
 
+/** Delete a group and all of its associated data. Owner-only via RLS. */
+export async function deleteGroup(groupId: string): Promise<void> {
+  const client = getRayfinClient();
+
+  const [votes, destinations, availability, members] = await Promise.all([
+    client.data.Vote.select(['id']).where({ group_id: { eq: groupId } }).execute(),
+    client.data.Destination.select(['id'])
+      .where({ group_id: { eq: groupId } })
+      .execute(),
+    client.data.Availability.select(['id'])
+      .where({ group_id: { eq: groupId } })
+      .execute(),
+    client.data.GroupMember.select(['id'])
+      .where({ group_id: { eq: groupId } })
+      .execute(),
+  ]);
+
+  await Promise.all([
+    ...votes.map((v) => client.data.Vote.delete({ id: v.id })),
+    ...destinations.map((d) => client.data.Destination.delete({ id: d.id })),
+    ...availability.map((a) => client.data.Availability.delete({ id: a.id })),
+    ...members.map((m) => client.data.GroupMember.delete({ id: m.id })),
+  ]);
+
+  await client.data.TripGroup.delete({ id: groupId });
+}
+
 export async function getGroupMembers(groupId: string): Promise<Member[]> {
   const client = getRayfinClient();
   const members = await client.data.GroupMember.select([

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { updateGroup, type Group } from '@/services/api';
+import { updateGroup, deleteGroup, type Group } from '@/services/api';
 import type { CrewUser } from '@/components/GroupWorkspace';
 
 const GROUP_EMOJIS = [
@@ -29,6 +29,8 @@ export function GroupHeader({
   const [draftName, setDraftName] = useState(group.name);
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
 
   const copyInvite = async () => {
@@ -39,6 +41,17 @@ export function GroupHeader({
     }
     setCopied(true);
     setTimeout(() => setCopied(false), 1800);
+  };
+
+  const removeGroup = async () => {
+    setDeleting(true);
+    try {
+      await deleteGroup(group.id);
+      setConfirmDelete(false);
+      await onGroupChanged();
+    } finally {
+      setDeleting(false);
+    }
   };
 
   useEffect(() => {
@@ -174,24 +187,71 @@ export function GroupHeader({
         </p>
       </div>
 
-      {/* Shareable invite code */}
-      <div className="ml-auto flex flex-col items-end gap-1">
-        <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">
-          Código de invitación
-        </span>
-        <button
-          type="button"
-          onClick={() => void copyInvite()}
-          title="Copiar código para invitar a otros viajeros"
-          className="flex items-center gap-2 rounded-xl border border-sun-200 bg-sun-50/70 px-3 py-1.5 transition hover:border-sun-300 hover:bg-sun-50"
-        >
-          <code className="max-w-[160px] truncate font-mono text-xs text-gray-700">
-            {group.id}
-          </code>
-          <span className="text-xs font-medium text-sun-600">
-            {copied ? '✓ Copiado' : '📋 Copiar'}
+      {/* Shareable invite code + owner actions */}
+      <div className="ml-auto flex items-end gap-3">
+        <div className="flex flex-col items-end gap-1">
+          <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">
+            Código de invitación
           </span>
-        </button>
+          <button
+            type="button"
+            onClick={() => void copyInvite()}
+            title="Copiar código para invitar a otros viajeros"
+            className="flex items-center gap-2 rounded-xl border border-sun-200 bg-sun-50/70 px-3 py-1.5 transition hover:border-sun-300 hover:bg-sun-50"
+          >
+            <code className="max-w-[160px] truncate font-mono text-xs text-gray-700">
+              {group.id}
+            </code>
+            <span className="text-xs font-medium text-sun-600">
+              {copied ? '✓ Copiado' : '📋 Copiar'}
+            </span>
+          </button>
+        </div>
+
+        {isOwner && (
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setConfirmDelete(true)}
+              disabled={deleting}
+              title="Eliminar grupo"
+              aria-label="Eliminar grupo"
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-gray-200 text-gray-400 transition hover:border-red-200 hover:bg-red-50 hover:text-red-500 disabled:opacity-40"
+            >
+              🗑️
+            </button>
+
+            {confirmDelete && (
+              <div className="absolute right-0 top-11 z-30 w-64 rounded-2xl border border-gray-200 bg-white p-4 shadow-lg">
+                <p className="text-sm font-semibold text-gray-900">
+                  ¿Eliminar este grupo?
+                </p>
+                <p className="mt-1 text-xs text-gray-500">
+                  Se borrarán sus destinos, votos y disponibilidades. Esta acción
+                  no se puede deshacer.
+                </p>
+                <div className="mt-3 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setConfirmDelete(false)}
+                    disabled={deleting}
+                    className="flex-1 rounded-xl border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 disabled:opacity-40"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void removeGroup()}
+                    disabled={deleting}
+                    className="flex-1 rounded-xl bg-red-500 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-red-600 disabled:opacity-40"
+                  >
+                    {deleting ? 'Eliminando…' : 'Eliminar'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
