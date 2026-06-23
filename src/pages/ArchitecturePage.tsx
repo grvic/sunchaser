@@ -2,19 +2,13 @@ import { Link } from 'react-router-dom';
 
 import { useAuth } from '@/hooks/AuthContext';
 import {
-  AuthDiamondLogo,
   CopilotCliLogo,
-  DatabaseLogo,
   EntraLogo,
   FabricLogo,
-  FunctionsLogo,
   GitHubLogo,
   OneLakeLogo,
-  OneLakeMarkLogo,
   RayfinLogo,
-  RayfinWordmark,
   ReactLogo,
-  RealTimeLogo,
   TailwindLogo,
   TypeScriptLogo,
   ViteLogo,
@@ -127,6 +121,12 @@ function TechCard({ tech, highlight }: { tech: Tech; highlight?: boolean }) {
 
 /* ---- Build / Deploy diagram (light, on-brand) ---- */
 
+import dbLogo from '@/assets/fabric/database.png';
+import oneLakeLogo from '@/assets/fabric/onelake.png';
+import rtiLogo from '@/assets/fabric/rti.png';
+import functionsLogo from '@/assets/fabric/functions.png';
+import authLogo from '@/assets/fabric/auth.png';
+
 function Panel({ children }: { children: React.ReactNode }) {
   return (
     <div className="rounded-3xl bg-gradient-to-r from-sun-300/70 via-sea-300/60 to-sun-300/70 p-px shadow-sm">
@@ -152,16 +152,10 @@ function FlowArrow() {
   );
 }
 
-function DeployItem({
-  logo,
-  label,
-}: {
-  logo: React.ReactNode;
-  label: string;
-}) {
+function DeployItem({ logo, label }: { logo: string; label: string }) {
   return (
     <div className="flex flex-1 basis-28 flex-col items-center gap-2 text-center">
-      <div className="flex h-12 w-12 items-center justify-center">{logo}</div>
+      <img src={logo} alt={label} className="h-11 w-11 object-contain" />
       <span className="text-xs font-medium text-gray-600">{label}</span>
     </div>
   );
@@ -170,25 +164,20 @@ function DeployItem({
 function BuildDeployDiagram() {
   return (
     <div className="space-y-1">
-      {/* Build */}
+      {/* Build flow */}
       <Panel>
-        <div className="text-center">
-          <h3 className="bg-gradient-to-r from-sun-500 via-sea-500 to-sun-500 bg-clip-text text-2xl font-bold text-transparent sm:text-3xl">
-            Agentic app development
-          </h3>
-          <div className="mt-3">
-            <RayfinWordmark />
-          </div>
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-sm text-gray-700">
-            <span className="inline-flex items-center gap-2 font-semibold text-gray-900">
-              <CopilotCliLogo size={22} />
-              GitHub Copilot CLI
-            </span>
-            <FlowArrow />
-            <span className="font-medium">SDK + CLI</span>
-            <FlowArrow />
-            <span className="font-medium">Your app backend</span>
-          </div>
+        <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-gray-700">
+          <span className="inline-flex items-center gap-2 font-semibold text-gray-900">
+            <CopilotCliLogo size={26} />
+            GitHub Copilot CLI
+          </span>
+          <FlowArrow />
+          <span className="font-semibold text-gray-900">Rayfin SDK / CLI</span>
+          <FlowArrow />
+          <span className="inline-flex items-center gap-2 font-semibold text-gray-900">
+            <FabricLogo size={24} />
+            Fabric Apps
+          </span>
         </div>
       </Panel>
 
@@ -197,25 +186,14 @@ function BuildDeployDiagram() {
         <span className="text-2xl leading-none text-sun-400">↓</span>
       </div>
 
-      {/* Deploy */}
+      {/* Deploy infrastructure */}
       <Panel>
-        <div className="text-center">
-          <h3 className="bg-gradient-to-r from-sea-500 via-sun-500 to-sea-500 bg-clip-text text-2xl font-bold text-transparent sm:text-3xl">
-            Enterprise-grade infrastructure
-          </h3>
-          <div className="mt-6 flex flex-wrap justify-center gap-5">
-            <DeployItem logo={<DatabaseLogo size={40} />} label="Database" />
-            <DeployItem logo={<OneLakeMarkLogo size={40} />} label="OneLake" />
-            <DeployItem
-              logo={<RealTimeLogo size={40} />}
-              label="Real-Time Intelligence"
-            />
-            <DeployItem logo={<FunctionsLogo size={40} />} label="Functions" />
-            <DeployItem
-              logo={<AuthDiamondLogo size={40} />}
-              label="Authentication"
-            />
-          </div>
+        <div className="flex flex-wrap justify-center gap-5">
+          <DeployItem logo={dbLogo} label="Database" />
+          <DeployItem logo={oneLakeLogo} label="OneLake" />
+          <DeployItem logo={rtiLogo} label="Real-Time Intelligence" />
+          <DeployItem logo={functionsLogo} label="Functions" />
+          <DeployItem logo={authLogo} label="Authentication" />
         </div>
       </Panel>
     </div>
