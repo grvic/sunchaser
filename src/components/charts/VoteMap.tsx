@@ -45,6 +45,26 @@ export function VoteMap({
       </h3>
       <div className="overflow-hidden rounded-xl bg-gradient-to-b from-sea-50 to-sea-100">
         <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full">
+          <defs>
+            <linearGradient id="pin-voted" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#FBBF24" />
+              <stop offset="55%" stopColor="#F59E0B" />
+              <stop offset="100%" stopColor="#F97316" />
+            </linearGradient>
+            <linearGradient id="pin-empty" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#CBD5E1" />
+              <stop offset="100%" stopColor="#94A3B8" />
+            </linearGradient>
+            <filter id="pin-shadow" x="-50%" y="-50%" width="200%" height="200%">
+              <feDropShadow
+                dx="0"
+                dy="1.5"
+                stdDeviation="1.6"
+                floodColor="#0f172a"
+                floodOpacity="0.28"
+              />
+            </filter>
+          </defs>
           {/* Graticule for orientation */}
           <path
             d={GRATICULE_PATH}
@@ -64,23 +84,30 @@ export function VoteMap({
           />
 
           {pins.map(({ d, x, y, count }) => {
-            const scale = 0.9 + (count / maxVotes) * 0.5;
+            const scale = 0.9 + (count / maxVotes) * 0.45;
+            const voted = count > 0;
             return (
               <g key={d.id} transform={`translate(${x} ${y}) scale(${scale})`}>
-                {/* Inverted teardrop pin: round bulb on top, point at bottom */}
-                <path
-                  d="M0 0 C-15 -22 -13 -44 0 -44 C13 -44 15 -22 0 0 Z"
-                  fill={count > 0 ? '#f97316' : '#94a3b8'}
-                  stroke="#fff"
-                  strokeWidth="2"
-                />
-                {/* Vote count, directly inside the bulb */}
+                {/* Soft shadow on the map under the pin */}
+                <ellipse cx="0" cy="1.5" rx="6" ry="2.2" fill="#0f172a" opacity="0.18" />
+                {/* Clean map marker: round bulb tapering to a point at the anchor */}
+                <g filter="url(#pin-shadow)">
+                  <path
+                    d="M0 0 C-7 -15 -14 -20 -14 -30 A14 14 0 1 1 14 -30 C14 -20 7 -15 0 0 Z"
+                    fill={voted ? 'url(#pin-voted)' : 'url(#pin-empty)'}
+                    stroke="#fff"
+                    strokeWidth="2"
+                  />
+                  {/* Subtle inner ring to lift the number off the gradient */}
+                  <circle cx="0" cy="-30" r="9.5" fill="#fff" fillOpacity="0.18" />
+                </g>
+                {/* Vote count, centred inside the bulb */}
                 <text
                   x="0"
-                  y="-29"
+                  y="-30"
                   textAnchor="middle"
                   dominantBaseline="central"
-                  fontSize="16"
+                  fontSize="15"
                   fontWeight="700"
                   fill="#fff"
                 >
@@ -89,7 +116,7 @@ export function VoteMap({
                 {/* Destination label below the point */}
                 <text
                   x="0"
-                  y="13"
+                  y="14"
                   textAnchor="middle"
                   fontSize="11"
                   fontWeight="600"
