@@ -121,12 +121,6 @@ function TechCard({ tech, highlight }: { tech: Tech; highlight?: boolean }) {
 
 /* ---- Build / Deploy diagram (light, on-brand) ---- */
 
-import dbLogo from '@/assets/fabric/database.png';
-import oneLakeLogo from '@/assets/fabric/onelake.png';
-import rtiLogo from '@/assets/fabric/rti.png';
-import functionsLogo from '@/assets/fabric/functions.png';
-import authLogo from '@/assets/fabric/auth.png';
-
 function Panel({ children }: { children: React.ReactNode }) {
   return (
     <div className="rounded-3xl bg-gradient-to-r from-sun-300/70 via-sea-300/60 to-sun-300/70 p-px shadow-sm">
@@ -139,24 +133,131 @@ function Panel({ children }: { children: React.ReactNode }) {
 
 function FlowArrow() {
   return (
-    <svg width="56" height="14" viewBox="0 0 56 14" className="shrink-0">
+    <svg width="48" height="22" viewBox="0 0 48 22" className="shrink-0">
       <defs>
         <linearGradient id="flow-a" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stopColor="#F59E0B" />
           <stop offset="100%" stopColor="#0EA5E9" />
         </linearGradient>
       </defs>
-      <line x1="0" y1="7" x2="46" y2="7" stroke="url(#flow-a)" strokeWidth="2" />
-      <path d="M44 2 L54 7 L44 12 Z" fill="#0EA5E9" />
+      <g
+        fill="none"
+        stroke="url(#flow-a)"
+        strokeWidth="2.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <line x1="3" y1="11" x2="34" y2="11" />
+        <path d="M33 5 L44 11 L33 17" />
+      </g>
     </svg>
   );
 }
 
-function DeployItem({ logo, label }: { logo: string; label: string }) {
+/* On-brand infrastructure tiles — rounded squares with soft sun/sea gradients */
+const INFRA: {
+  label: string;
+  id: string;
+  from: string;
+  to: string;
+  glyph: React.ReactNode;
+}[] = [
+  {
+    label: 'Database',
+    id: 'infra-db',
+    from: '#38BDF8',
+    to: '#0EA5E9',
+    glyph: (
+      <g
+        fill="none"
+        stroke="#fff"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <ellipse cx="24" cy="16" rx="9" ry="3.6" />
+        <path d="M15 16 v16 a9 3.6 0 0 0 18 0 V16" />
+        <path d="M15 24 a9 3.6 0 0 0 18 0" />
+      </g>
+    ),
+  },
+  {
+    label: 'OneLake',
+    id: 'infra-lake',
+    from: '#22D3EE',
+    to: '#06B6D4',
+    glyph: (
+      <path
+        d="M24 13 C24 13 31 20.5 31 26 a7 7 0 0 1 -14 0 C17 20.5 24 13 24 13 Z"
+        fill="#fff"
+      />
+    ),
+  },
+  {
+    label: 'Real-Time Intelligence',
+    id: 'infra-rti',
+    from: '#FBBF24',
+    to: '#F59E0B',
+    glyph: <path d="M26.5 12 L16.5 27 H23 L21.5 36 L31.5 20 H25 Z" fill="#fff" />,
+  },
+  {
+    label: 'Functions',
+    id: 'infra-fn',
+    from: '#FB923C',
+    to: '#F97316',
+    glyph: (
+      <g
+        fill="none"
+        stroke="#fff"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M21 13 c-3 0 -3 3 -3 5 0 2 -1.6 3 -3 3 1.4 0 3 1 3 3 0 2 0 5 3 5" />
+        <path d="M27 13 c3 0 3 3 3 5 0 2 1.6 3 3 3 -1.4 0 -3 1 -3 3 0 2 0 5 -3 5" />
+      </g>
+    ),
+  },
+  {
+    label: 'Authentication',
+    id: 'infra-auth',
+    from: '#60A5FA',
+    to: '#3B82F6',
+    glyph: (
+      <g>
+        <rect x="15" y="22" width="18" height="13" rx="3" fill="#fff" />
+        <path
+          d="M19 22 v-3 a5 5 0 0 1 10 0 v3"
+          fill="none"
+          stroke="#fff"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+        />
+        <circle cx="24" cy="27.5" r="1.7" fill="#3B82F6" />
+        <rect x="23.2" y="27.5" width="1.6" height="4" rx="0.8" fill="#3B82F6" />
+      </g>
+    ),
+  },
+];
+
+function InfraTile({
+  item,
+}: {
+  item: (typeof INFRA)[number];
+}) {
   return (
     <div className="flex flex-1 basis-28 flex-col items-center gap-2 text-center">
-      <img src={logo} alt={label} className="h-11 w-11 object-contain" />
-      <span className="text-xs font-medium text-gray-600">{label}</span>
+      <svg width="48" height="48" viewBox="0 0 48 48" className="drop-shadow-sm">
+        <defs>
+          <linearGradient id={item.id} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={item.from} />
+            <stop offset="100%" stopColor={item.to} />
+          </linearGradient>
+        </defs>
+        <rect width="48" height="48" rx="14" fill={`url(#${item.id})`} />
+        {item.glyph}
+      </svg>
+      <span className="text-xs font-medium text-gray-600">{item.label}</span>
     </div>
   );
 }
@@ -166,7 +267,7 @@ function BuildDeployDiagram() {
     <div className="space-y-1">
       {/* Build flow */}
       <Panel>
-        <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-gray-700">
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-sm text-gray-700">
           <span className="inline-flex items-center gap-2 font-semibold text-gray-900">
             <CopilotCliLogo size={26} />
             GitHub Copilot CLI
@@ -189,11 +290,9 @@ function BuildDeployDiagram() {
       {/* Deploy infrastructure */}
       <Panel>
         <div className="flex flex-wrap justify-center gap-5">
-          <DeployItem logo={dbLogo} label="Database" />
-          <DeployItem logo={oneLakeLogo} label="OneLake" />
-          <DeployItem logo={rtiLogo} label="Real-Time Intelligence" />
-          <DeployItem logo={functionsLogo} label="Functions" />
-          <DeployItem logo={authLogo} label="Authentication" />
+          {INFRA.map((item) => (
+            <InfraTile key={item.id} item={item} />
+          ))}
         </div>
       </Panel>
     </div>
