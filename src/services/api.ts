@@ -120,6 +120,14 @@ export async function joinGroup(
   user: { id: string; name: string }
 ): Promise<void> {
   const client = getRayfinClient();
+
+  const group = await client.data.TripGroup.select(['id'])
+    .where({ id: { eq: groupId } })
+    .execute();
+  if (group.length === 0) {
+    throw new Error('Group not found');
+  }
+
   const existing = await client.data.GroupMember.select(['id'])
     .where({ group_id: { eq: groupId }, user_id: { eq: user.id } })
     .execute();

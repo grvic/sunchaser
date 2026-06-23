@@ -28,7 +28,18 @@ export function GroupHeader({
   const [editingName, setEditingName] = useState(false);
   const [draftName, setDraftName] = useState(group.name);
   const [saving, setSaving] = useState(false);
+  const [copied, setCopied] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
+
+  const copyInvite = async () => {
+    try {
+      await navigator.clipboard.writeText(group.id);
+    } catch {
+      // Clipboard may be blocked; the code is still visible to copy manually.
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
+  };
 
   useEffect(() => {
     setDraftName(group.name);
@@ -161,6 +172,26 @@ export function GroupHeader({
           {destinationsCount}{' '}
           {destinationsCount === 1 ? 'destino' : 'destinos'}
         </p>
+      </div>
+
+      {/* Shareable invite code */}
+      <div className="ml-auto flex flex-col items-end gap-1">
+        <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">
+          Código de invitación
+        </span>
+        <button
+          type="button"
+          onClick={() => void copyInvite()}
+          title="Copiar código para invitar a otros viajeros"
+          className="flex items-center gap-2 rounded-xl border border-sun-200 bg-sun-50/70 px-3 py-1.5 transition hover:border-sun-300 hover:bg-sun-50"
+        >
+          <code className="max-w-[160px] truncate font-mono text-xs text-gray-700">
+            {group.id}
+          </code>
+          <span className="text-xs font-medium text-sun-600">
+            {copied ? '✓ Copiado' : '📋 Copiar'}
+          </span>
+        </button>
       </div>
     </div>
   );

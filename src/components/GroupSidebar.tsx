@@ -135,9 +135,12 @@ export function GroupSidebar({
               autoFocus
               value={joinId}
               onChange={(e) => setJoinId(e.target.value)}
-              placeholder="ID del grupo"
+              placeholder="Pega el código de invitación"
               className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm focus:border-sun-500 focus:outline-none"
             />
+            <p className="px-1 text-[11px] text-gray-400">
+              Pídele a un miembro su código (lo verá arriba en el grupo).
+            </p>
             <button
               type="submit"
               disabled={busy || !joinId.trim()}
